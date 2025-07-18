@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v16';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v17';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -1141,18 +1141,16 @@
         }
         
         function speak(text) {
-            if (!'speechSynthesis' in window) {
+            if (!('speechSynthesis' in window)) {
                 console.log("Speech synthesis not supported.");
                 return;
             }
-            if (window.speechSynthesis.speaking) {
-                return; // Don't interrupt if already speaking
-            }
+            window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             if (englishVoice) {
                 utterance.voice = englishVoice;
             } else {
-                loadEnglishVoice(); // Try to load it again if it wasn't ready
+                loadEnglishVoice(); 
                 if(englishVoice) utterance.voice = englishVoice;
             }
             utterance.lang = 'en-US';
@@ -1251,14 +1249,13 @@
         }
 
         function warmUpSpeechSynthesis() {
-            if ('speechSynthesis' in window && window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
-            } else {
-                 loadEnglishVoice();
+            if ('speechSynthesis' in window) {
+                if (window.speechSynthesis.getVoices().length > 0) {
+                    loadEnglishVoice();
+                } else {
+                    window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
+                }
             }
-            // A silent utterance to "wake up" the synthesis engine on mobile
-            const utterance = new SpeechSynthesisUtterance('');
-            window.speechSynthesis.speak(utterance);
             document.body.removeEventListener('click', warmUpSpeechSynthesis);
         }
         document.body.addEventListener('click', warmUpSpeechSynthesis);
