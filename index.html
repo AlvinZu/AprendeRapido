@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v18';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v19';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -1240,21 +1240,24 @@
 
         // --- Speech Synthesis Loader ---
         function loadEnglishVoice() {
+            // This function tries to find an English voice.
             const voices = window.speechSynthesis.getVoices();
-            englishVoice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en'));
+            englishVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
         }
 
+        // This function needs to be called after a user interaction to work on mobile.
         function warmUpSpeechSynthesis() {
             if ('speechSynthesis' in window) {
-                if (window.speechSynthesis.getVoices().length > 0) {
-                    loadEnglishVoice();
-                } else {
+                // If voices are not loaded yet, set a listener. Otherwise, load them.
+                if (window.speechSynthesis.getVoices().length === 0) {
                     window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
+                } else {
+                     loadEnglishVoice();
                 }
             }
-            document.body.removeEventListener('click', warmUpSpeechSynthesis, true);
         }
-        document.body.addEventListener('click', warmUpSpeechSynthesis, true);
+        // We call this when the user starts the app, which is a user interaction.
+        startWithNameBtn.addEventListener('click', warmUpSpeechSynthesis);
 
 
         // --- Initial Load ---
