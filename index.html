@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aprende Rapido</title>
+    <title>Quiz Kids</title>
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -63,6 +63,17 @@
             border-radius: 3px;
             padding: 0 2px;
         }
+        /* Drag and Drop styles */
+        .draggable-item {
+            touch-action: none;
+            cursor: grab;
+        }
+        .drop-target {
+            transition: background-color 0.2s;
+        }
+        .drop-target.over {
+            background-color: #dbeafe; /* blue-100 */
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -85,9 +96,40 @@
                  <button id="math-menu-btn" class="w-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Matemáticas</button>
                  <button id="spanish-menu-btn" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Español</button>
                  <button id="english-menu-btn" data-quiz-type="english" class="w-full bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Inglés</button>
+                 <button id="gems-menu-btn" class="w-full bg-gradient-to-br from-gray-400 to-gray-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Mis Recompensas</button>
+                 <button id="stats-menu-btn" class="w-full bg-gradient-to-br from-cyan-400 to-sky-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Mis Estadísticas</button>
             </div>
         </div>
         
+        <!-- Gems Screen -->
+        <div id="gems-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-6">Mis Recompensas</h1>
+            <div id="gems-container" class="space-y-4 text-left p-4 bg-gray-50 rounded-lg">
+                <!-- Gem details will be populated here -->
+            </div>
+            <p class="text-gray-500 mt-4 text-sm">¡Consigue un 💎 de cada nivel para el gran premio!</p>
+            <button id="back-to-main-from-gems-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+        </div>
+        
+        <!-- Stats Screen -->
+        <div id="stats-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-6">Mis Estadísticas</h1>
+            <div id="stats-container" class="space-y-6 text-left">
+                <!-- Stats will be populated here -->
+            </div>
+            <button id="back-to-main-from-stats-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+        </div>
+
+        <!-- Grand Prize Alert Screen -->
+        <div id="prize-alert-screen" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-8 text-center shadow-2xl transform transition-all scale-95 animate-pulse">
+                <h2 class="text-4xl font-bold text-yellow-500 mb-4">¡GRAN PREMIO!</h2>
+                <p class="text-2xl text-gray-700 mb-6">¡Felicidades, <span class="user-name-placeholder"></span>! Has demostrado tu maestría al conseguir diamantes de todos los niveles.</p>
+                <p class="text-lg text-gray-600">¡Te has ganado una tarjeta de Google Play para disfrutar de tus videojuegos favoritos como recompensa por tu increíble esfuerzo!</p>
+                <button id="close-prize-alert-btn" class="mt-8 w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">¡Genial!</button>
+            </div>
+        </div>
+
         <!-- Math Type Selection Screen -->
         <div id="math-type-screen" class="hidden">
             <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">Matemáticas</h1>
@@ -96,6 +138,7 @@
                  <button data-quiz-type="multiplication" class="w-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Tablas de Multiplicar</button>
                  <button data-quiz-type="addition" class="w-full bg-gradient-to-br from-blue-500 to-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Sumas</button>
                  <button data-quiz-type="subtraction" class="w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Restas</button>
+                 <button data-quiz-type="division" class="w-full bg-gradient-to-br from-red-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Divisiones</button>
             </div>
             <button id="back-to-main-menu-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
@@ -119,6 +162,20 @@
             </div>
              <button id="back-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver</button>
         </div>
+
+        <!-- Division Visual Game Screen -->
+        <div id="division-visual-screen" class="hidden">
+             <div class="flex justify-between items-center mb-4">
+                <button id="back-from-division-game-btn" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Salir</button>
+                <span id="division-game-counter" class="text-gray-600 font-semibold"></span>
+            </div>
+            <h2 id="division-game-title" class="text-2xl font-bold text-gray-800 mb-4">¡A repartir!</h2>
+            <p id="division-game-instruction" class="text-lg text-gray-600 mb-4"></p>
+            <div id="items-source-container" class="h-24 p-2 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-2 mb-4"></div>
+            <div id="drop-targets-container" class="grid grid-cols-4 gap-4 mb-4"></div>
+            <div id="division-game-feedback" class="h-8 text-xl font-bold mb-4"></div>
+            <button id="check-division-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Revisar</button>
+        </div>
         
         <!-- Reading Screen -->
         <div id="reading-screen" class="hidden">
@@ -129,7 +186,10 @@
             <h1 id="reading-title" class="text-2xl font-bold text-gray-800 mb-4 -mt-6"></h1>
             <div id="reading-text-container" class="text-left text-lg text-gray-700 h-64 overflow-y-auto p-4 border rounded-lg bg-gray-50 mb-4"></div>
             <div id="reading-timer-container" class="text-lg font-semibold text-gray-600 mb-4">Tiempo de lectura: <span id="reading-timer"></span></div>
-            <button id="start-reading-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Empezar a Leer</button>
+            <div id="reading-controls-container" class="space-y-3">
+                <button id="start-reading-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Empezar a Leer</button>
+                <button id="pause-resume-btn" class="hidden w-full bg-gradient-to-br from-yellow-500 to-amber-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Pausar</button>
+            </div>
         </div>
         
         <!-- Round Transition Screen -->
@@ -183,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v4';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v12';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -206,9 +266,13 @@
         const screens = {
             nameInput: document.getElementById('name-input-screen'),
             mainMenu: document.getElementById('main-menu-screen'),
+            gems: document.getElementById('gems-screen'),
+            stats: document.getElementById('stats-screen'),
+            prizeAlert: document.getElementById('prize-alert-screen'),
             mathType: document.getElementById('math-type-screen'),
             spanishType: document.getElementById('spanish-type-screen'),
             difficulty: document.getElementById('difficulty-screen'),
+            divisionVisual: document.getElementById('division-visual-screen'),
             reading: document.getElementById('reading-screen'),
             quiz: document.getElementById('quiz-screen'),
             roundTransition: document.getElementById('round-transition-screen'),
@@ -220,6 +284,13 @@
         const mathMenuBtn = document.getElementById('math-menu-btn');
         const spanishMenuBtn = document.getElementById('spanish-menu-btn');
         const englishMenuBtn = document.getElementById('english-menu-btn');
+        const gemsMenuBtn = document.getElementById('gems-menu-btn');
+        const statsMenuBtn = document.getElementById('stats-menu-btn');
+        const backToMainFromGemsBtn = document.getElementById('back-to-main-from-gems-btn');
+        const backToMainFromStatsBtn = document.getElementById('back-to-main-from-stats-btn');
+        const gemsContainerEl = document.getElementById('gems-container');
+        const statsContainerEl = document.getElementById('stats-container');
+        const closePrizeAlertBtn = document.getElementById('close-prize-alert-btn');
         const mathTypeButtons = screens.mathType.querySelectorAll('[data-quiz-type]');
         const spanishTypeButtons = screens.spanishType.querySelectorAll('[data-quiz-type]');
         const backToMainMenuBtn = document.getElementById('back-to-main-menu-btn');
@@ -229,10 +300,12 @@
         const backBtn = document.getElementById('back-btn');
         const backFromReadingBtn = document.getElementById('back-from-reading-btn');
         const backFromQuizBtn = document.getElementById('back-from-quiz-btn');
+        const backFromDivisionGameBtn = document.getElementById('back-from-division-game-btn');
         const readingTitleEl = document.getElementById('reading-title');
         const readingTextContainerEl = document.getElementById('reading-text-container');
         const readingTimerEl = document.getElementById('reading-timer');
         const startReadingBtn = document.getElementById('start-reading-btn');
+        const pauseResumeBtn = document.getElementById('pause-resume-btn');
         const nextRoundBtn = document.getElementById('next-round-btn');
         const exitSessionBtn = document.getElementById('exit-session-btn');
         const restartBtn = document.getElementById('restart-btn');
@@ -249,12 +322,27 @@
         const summaryTextEl = document.getElementById('summary-text');
         const timerProgress = document.getElementById('timer-progress');
         const timerText = document.getElementById('timer-text');
+        const divisionGameCounterEl = document.getElementById('division-game-counter');
+        const divisionGameInstructionEl = document.getElementById('division-game-instruction');
+        const itemsSourceContainerEl = document.getElementById('items-source-container');
+        const dropTargetsContainerEl = document.getElementById('drop-targets-container');
+        const divisionGameFeedbackEl = document.getElementById('division-game-feedback');
+        const checkDivisionBtn = document.getElementById('check-division-btn');
 
         // --- Content Data ---
         const englishData = {
-            colors: { 'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise' },
-            animals: { 'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog' },
-            verbs: { 'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen' }
+            colors: {
+                'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise',
+                'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby'
+            },
+            animals: {
+                'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog',
+                'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly'
+            },
+            verbs: {
+                'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen',
+                'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find'
+            }
         };
         const readingData = [
             {
@@ -324,6 +412,7 @@
             multiplication: { name: 'Tablas de Multiplicar', difficulties: { easy: { name: 'Fácil', tables: { min: 2, max: 5 }, timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', tables: { min: 2, max: 9 }, timeLimit: 10, optionLogic: 'plausible' }, hard: { name: 'Difícil', tables: { min: 2, max: 9 }, timeLimit: 7, optionLogic: 'close' }}},
             addition: { name: 'Sumas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [100, 999], timeLimit: 10, optionLogic: 'close' }}},
             subtraction: { name: 'Restas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [50, 200], timeLimit: 8, optionLogic: 'close' }}},
+            division: { name: 'Divisiones', difficulties: { easy: { name: 'Fácil (Visual)' }, normal: { name: 'Normal (Inversa de x)', timeLimit: 15 }, hard: { name: 'Difícil (con Resto)', timeLimit: 20 }}},
             english: { name: 'Inglés', difficulties: { easy: { name: 'Fácil (Colores)', timeLimit: 15, optionLogic: 'plausible', data: englishData.colors }, normal: { name: 'Normal (Animales)', timeLimit: 12, optionLogic: 'plausible', data: englishData.animals }, hard: { name: 'Difícil (Verbos)', timeLimit: 10, optionLogic: 'close', data: englishData.verbs }}},
             reading: { name: 'Lectura de Comprensión' }
         };
@@ -342,8 +431,12 @@
         let QUESTIONS_PER_ROUND = 10;
         let timer;
         let readingTimerInterval;
-        let isReadingActive = false;
+        let karaokeInterval;
+        let isReadingPaused = false;
         let timeLeft;
+        let draggedItem = null;
+        let gems = {};
+        let stats = {};
 
         // --- Gesture State ---
         let touchStartX = 0;
@@ -352,6 +445,10 @@
         const FULL_DASH_ARRAY = 283;
 
         // --- Functions ---
+        
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
         function showScreen(screenName) {
             Object.values(screens).forEach(screen => screen.classList.add('hidden'));
@@ -365,6 +462,8 @@
 
         function initializeUser() {
             const savedName = localStorage.getItem('quizUserName');
+            loadGems();
+            loadStats();
             if (savedName) {
                 userName = savedName;
                 welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
@@ -386,6 +485,136 @@
             }
         }
 
+        function loadGems() {
+            const savedGems = localStorage.getItem('quizUserGems');
+            gems = savedGems ? JSON.parse(savedGems) : {};
+        }
+
+        function saveGems() {
+            localStorage.setItem('quizUserGems', JSON.stringify(gems));
+        }
+
+        function loadStats() {
+            const savedStats = localStorage.getItem('quizUserStats');
+            stats = savedStats ? JSON.parse(savedStats) : {};
+        }
+
+        function saveStats() {
+            localStorage.setItem('quizUserStats', JSON.stringify(stats));
+        }
+
+        function updateStats(quizType, score, totalQuestions) {
+            if (!stats[quizType]) {
+                stats[quizType] = { correct: 0, total: 0 };
+            }
+            stats[quizType].correct += score;
+            stats[quizType].total += totalQuestions;
+            saveStats();
+        }
+
+        function showGemsScreen() {
+            gemsContainerEl.innerHTML = '';
+            const subjects = {
+                'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division'],
+                'Español': ['reading'],
+                'Inglés': ['english']
+            };
+
+            for (const subject in subjects) {
+                const subjectDiv = document.createElement('div');
+                subjectDiv.innerHTML = `<h2 class="text-2xl font-bold text-gray-800 mb-2">${subject}</h2>`;
+                
+                let hasGemsForSubject = false;
+                subjects[subject].forEach(type => {
+                    if (gems[type]) {
+                        hasGemsForSubject = true;
+                        const typeDiv = document.createElement('div');
+                        typeDiv.className = 'ml-4 mb-4';
+                        typeDiv.innerHTML = `<h3 class="font-semibold text-lg">${quizSettings[type].name}</h3>`;
+                        
+                        Object.keys(gems[type]).forEach(level => {
+                            const levelGems = gems[type][level];
+                            const levelDiv = document.createElement('div');
+                            levelDiv.className = 'ml-4 text-gray-700';
+                            levelDiv.innerHTML = `
+                                <p>${quizSettings[type].difficulties[level].name}:</p>
+                                <div class="flex justify-between items-center text-md ml-4"><span>💎 Diamantes:</span><span class="font-bold text-xl">${levelGems.diamonds}</span></div>
+                                <div class="flex justify-between items-center text-md ml-4"><span>🔴 Rubíes:</span><span class="font-bold text-xl">${levelGems.rubies}</span></div>
+                            `;
+                            typeDiv.appendChild(levelDiv);
+                        });
+                        subjectDiv.appendChild(typeDiv);
+                    }
+                });
+                if(hasGemsForSubject) {
+                    gemsContainerEl.appendChild(subjectDiv);
+                }
+            }
+            if (gemsContainerEl.innerHTML === '') {
+                gemsContainerEl.innerHTML = '<p class="text-center text-gray-500">Aún no has ganado ninguna recompensa. ¡Sigue jugando para conseguirlas!</p>';
+            }
+            showScreen('gems');
+        }
+
+        function showStatsScreen() {
+            statsContainerEl.innerHTML = '';
+            let hasStats = false;
+            for (const type in stats) {
+                if (stats[type] && stats[type].total > 0) {
+                    hasStats = true;
+                    const percentage = Math.round((stats[type].correct / stats[type].total) * 100);
+                    const color = percentage > 75 ? 'bg-green-500' : percentage > 50 ? 'bg-yellow-500' : 'bg-red-500';
+                    const statDiv = document.createElement('div');
+                    statDiv.innerHTML = `
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-semibold">${quizSettings[type].name}</span>
+                            <span class="font-bold">${percentage}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div class="${color} h-4 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                        <p class="text-sm text-gray-500 text-right">${stats[type].correct} / ${stats[type].total} correctas</p>
+                    `;
+                    statsContainerEl.appendChild(statDiv);
+                }
+            }
+            if (!hasStats) {
+                statsContainerEl.innerHTML = '<p class="text-center text-gray-500">Aún no hay estadísticas. ¡Completa una sesión para ver tu progreso!</p>';
+            }
+            showScreen('stats');
+        }
+
+        function awardGem(quizType, difficultyKey, gemType) {
+            if (!difficultyKey) return;
+            if (!gems[quizType]) gems[quizType] = {};
+            if (!gems[quizType][difficultyKey]) gems[quizType][difficultyKey] = { diamonds: 0, rubies: 0 };
+            
+            gems[quizType][difficultyKey][gemType]++;
+            saveGems();
+            
+            if (gemType === 'diamonds') {
+                checkGrandPrize();
+            }
+        }
+
+        function checkGrandPrize() {
+            const grandPrizeAwarded = localStorage.getItem('grandPrizeAwarded');
+            if (grandPrizeAwarded) return;
+            
+            let hasEasy = false, hasNormal = false, hasHard = false;
+            for(const type in gems) {
+                if(gems[type].easy && gems[type].easy.diamonds > 0) hasEasy = true;
+                if(gems[type].normal && gems[type].normal.diamonds > 0) hasNormal = true;
+                if(gems[type].hard && gems[type].hard.diamonds > 0) hasHard = true;
+            }
+
+            if (hasEasy && hasNormal && hasHard) {
+                document.querySelectorAll('.user-name-placeholder').forEach(el => el.textContent = userName);
+                screens.prizeAlert.classList.remove('hidden');
+                localStorage.setItem('grandPrizeAwarded', 'true');
+            }
+        }
+        
         function selectQuizType(type) {
             currentQuizType = type;
             if (currentQuizType === 'reading') {
@@ -415,7 +644,7 @@
         }
         
         function selectDifficulty(level) {
-            difficultySettings = quizSettings[currentQuizType].difficulties[level];
+            difficultySettings = { ...quizSettings[currentQuizType].difficulties[level], key: level };
             startSession();
         }
 
@@ -439,7 +668,11 @@
                 sessionContent = [...readingData].sort(() => Math.random() - 0.5);
                 TOTAL_ROUNDS = sessionContent.length;
                 QUESTIONS_PER_ROUND = sessionContent[0].questions.length;
-            } else {
+            } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
+                TOTAL_ROUNDS = 3;
+                QUESTIONS_PER_ROUND = 5; 
+            }
+             else {
                 TOTAL_ROUNDS = 3;
                 QUESTIONS_PER_ROUND = 10;
             }
@@ -453,12 +686,15 @@
 
             if (currentQuizType === 'reading') {
                 setupReadingScreen();
-            } else {
+            } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
+                showNextDivisionGame();
+            }
+            else {
                 showScreen('quiz');
                 showNextQuestion();
             }
         }
-
+        
         function setupReadingScreen() {
             const reading = sessionContent[currentRound - 1];
             readingTitleEl.textContent = reading.title;
@@ -470,57 +706,64 @@
             const timeInSeconds = Math.round((wordCount / reading.wpm) * 60);
             readingTimerEl.textContent = `${timeInSeconds}s`;
             
+            startReadingBtn.style.display = 'block';
+            pauseResumeBtn.style.display = 'none';
+
             startReadingBtn.onclick = () => {
-                startReadingBtn.disabled = true;
-                startReadingBtn.classList.add('opacity-50');
+                startReadingBtn.style.display = 'none';
+                pauseResumeBtn.style.display = 'block';
                 startKaraoke(words, timeInSeconds);
             };
-            startReadingBtn.disabled = false;
-            startReadingBtn.classList.remove('opacity-50');
             
             showScreen('reading');
         }
+        
+        let wordIndex = 0;
+        let timePerWord = 0;
 
         function startKaraoke(words, totalTime) {
-            isReadingActive = true;
+            wordIndex = 0;
+            timeLeft = totalTime;
+            timePerWord = (totalTime * 1000) / words.length;
+            isReadingPaused = false;
+            
+            pauseResumeBtn.textContent = 'Pausar';
+            resumeKaraoke();
+        }
+
+        function resumeKaraoke() {
             const wordSpans = readingTextContainerEl.querySelectorAll('span');
-            const timePerWord = (totalTime * 1000) / words.length;
-            let wordIndex = 0;
-            let timeLeft = totalTime;
-
-            readingTimerEl.textContent = `${timeLeft}s`;
-            const timerDiv = document.getElementById('reading-timer-container');
-            timerDiv.style.display = 'block';
-
+            
             readingTimerInterval = setInterval(() => {
                 timeLeft--;
                 readingTimerEl.textContent = `${timeLeft}s`;
-                if (timeLeft <= 0) {
-                    clearInterval(readingTimerInterval);
-                }
+                if (timeLeft <= 0) clearInterval(readingTimerInterval);
             }, 1000);
 
             function highlightNext() {
-                if (!isReadingActive) return; // Stop the chain if user goes back
-                if (wordIndex > 0) {
-                    wordSpans[wordIndex - 1].classList.remove('reading-highlight');
-                }
+                if (wordIndex > 0) wordSpans[wordIndex - 1].classList.remove('reading-highlight');
+                
                 if (wordIndex < wordSpans.length) {
                     wordSpans[wordIndex].classList.add('reading-highlight');
                     wordSpans[wordIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
                     wordIndex++;
-                    setTimeout(highlightNext, timePerWord);
                 } else {
-                    isReadingActive = false;
+                    clearInterval(karaokeInterval);
                     clearInterval(readingTimerInterval);
-                    timerDiv.style.display = 'none';
                     setTimeout(() => {
                         showScreen('quiz');
                         showNextQuestion();
                     }, 1000);
                 }
             }
+            
+            karaokeInterval = setInterval(highlightNext, timePerWord);
             highlightNext();
+        }
+
+        function pauseKaraoke() {
+            clearInterval(karaokeInterval);
+            clearInterval(readingTimerInterval);
         }
 
         function generateQuestions() {
@@ -542,15 +785,16 @@
                     answer: q.a,
                     options: [...q.o, q.a].sort(() => Math.random() - 0.5)
                 }));
-            } else {
+            } else if (currentQuizType === 'division') {
+                for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+                    questions.push(generateDivisionQuestion());
+                }
+            }
+             else {
                 for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
                     questions.push(generateMathQuestion());
                 }
             }
-        }
-
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
         function generateMathQuestion() {
@@ -571,6 +815,103 @@
             }
             text = `${num1} ${operator} ${num2} = ?`;
             return { text, answer };
+        }
+        
+        function generateDivisionQuestion() {
+            if (difficultySettings.name.includes('Normal')) {
+                const num2 = getRandomNumber(2, 9);
+                const result = getRandomNumber(2, 9);
+                const num1 = num2 * result;
+                return { text: `${num1} ÷ ${num2} = ?`, answer: result };
+            } else { // Hard (with remainder)
+                const divisor = getRandomNumber(2, 9);
+                const quotient = getRandomNumber(2, 9);
+                const remainder = getRandomNumber(1, divisor - 1);
+                const dividend = divisor * quotient + remainder;
+                return { text: `${dividend} ÷ ${divisor} = ?`, answer: `${quotient} sobra ${remainder}` };
+            }
+        }
+        
+        function showNextDivisionGame() {
+            if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
+                setupDivisionVisualGame();
+                showScreen('divisionVisual');
+            } else {
+                handleRoundEnd();
+            }
+        }
+
+        function setupDivisionVisualGame() {
+            divisionGameCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
+            const items = ['🍎', '🎈', '⭐', '🎁', '⚽'];
+            const item = items[Math.floor(Math.random() * items.length)];
+            const divisor = getRandomNumber(2, 4);
+            const quotient = getRandomNumber(2, 4);
+            const dividend = divisor * quotient;
+
+            divisionGameInstructionEl.textContent = `Reparte ${dividend} ${item} entre ${divisor} grupos.`;
+            
+            itemsSourceContainerEl.innerHTML = '';
+            for (let i = 0; i < dividend; i++) {
+                const div = document.createElement('div');
+                div.textContent = item;
+                div.className = 'draggable-item text-3xl';
+                div.draggable = true;
+                div.addEventListener('dragstart', e => {
+                    draggedItem = e.target;
+                });
+                itemsSourceContainerEl.appendChild(div);
+            }
+
+            dropTargetsContainerEl.innerHTML = '';
+            dropTargetsContainerEl.className = `grid grid-cols-${divisor} gap-4 mb-4`;
+            for (let i = 0; i < divisor; i++) {
+                const div = document.createElement('div');
+                div.className = 'drop-target h-24 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-1 p-1';
+                div.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    e.target.closest('.drop-target').classList.add('over');
+                });
+                div.addEventListener('dragleave', e => {
+                    e.target.closest('.drop-target').classList.remove('over');
+                });
+                div.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const target = e.target.closest('.drop-target');
+                    target.classList.remove('over');
+                    if (draggedItem) {
+                        target.appendChild(draggedItem);
+                        draggedItem = null;
+                    }
+                });
+                dropTargetsContainerEl.appendChild(div);
+            }
+            
+            divisionGameFeedbackEl.textContent = '';
+            checkDivisionBtn.onclick = () => {
+                let isCorrect = true;
+                const targets = dropTargetsContainerEl.querySelectorAll('.drop-target');
+                if (itemsSourceContainerEl.children.length > 0) isCorrect = false;
+
+                targets.forEach(target => {
+                    if (target.children.length !== quotient) {
+                        isCorrect = false;
+                    }
+                });
+
+                if (isCorrect) {
+                    score++;
+                    divisionGameFeedbackEl.textContent = `¡Correcto! ${dividend} ÷ ${divisor} = ${quotient}`;
+                    divisionGameFeedbackEl.classList.add('text-green-500');
+                    divisionGameFeedbackEl.classList.remove('text-red-500');
+                    currentQuestionIndex++;
+                    setTimeout(showNextDivisionGame, 2000);
+                } else {
+                    divisionGameFeedbackEl.textContent = 'Inténtalo de nuevo.';
+                    divisionGameFeedbackEl.classList.add('text-red-500');
+                    divisionGameFeedbackEl.classList.remove('text-green-500');
+                }
+            };
         }
 
         function showNextQuestion() {
@@ -635,11 +976,26 @@
             const options = new Set([correctAnswer]);
             if (currentQuizType === 'english') {
                 const allAnswers = Object.values(difficultySettings.data);
-                while (options.size < 4) {
+                while (options.size < 4 && options.size < allAnswers.length) {
                     const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
                     options.add(randomAnswer);
                 }
-            } else {
+            } else if (currentQuizType === 'reading') {
+                while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
+                    const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
+                    options.add(randomOption);
+                }
+            }
+            else if (currentQuizType === 'division' && typeof correctAnswer === 'string') { // Division with remainder
+                while (options.size < 4) {
+                    const [q, r] = correctAnswer.split(' sobra ').map(Number);
+                    const wrongQ = q + (Math.random() < 0.5 ? -1 : 1);
+                    const wrongR = r + (Math.random() < 0.5 ? -1 : 1);
+                    if (wrongQ > 0) options.add(`${wrongQ} sobra ${r}`);
+                    if (wrongR >= 0 && wrongR !== r) options.add(`${q} sobra ${wrongR}`);
+                }
+            }
+            else {
                 while (options.size < 4) {
                     let offset;
                     const randomFactor = Math.random() < 0.5 ? -1 : 1;
@@ -660,7 +1016,8 @@
         function resetState() {
             clearInterval(timer);
             clearInterval(readingTimerInterval);
-            isReadingActive = false;
+            clearInterval(karaokeInterval);
+            isReadingPaused = false;
             feedbackContainer.textContent = '';
             feedbackContainer.classList.remove('text-red-500', 'text-green-500');
             while (answersContainer.firstChild) {
@@ -675,7 +1032,7 @@
                 ? parseInt(selectedButton.dataset.answer, 10)
                 : selectedButton.dataset.answer;
             const correctAnswer = questions[currentQuestionIndex].answer;
-            showFeedback(selectedAnswer === correctAnswer, correctAnswer, selectedButton);
+            showFeedback(selectedAnswer == correctAnswer, correctAnswer, selectedButton);
         }
 
         function handleTimeUp() {
@@ -687,7 +1044,7 @@
             Array.from(answersContainer.children).forEach(button => {
                 button.disabled = true;
                 const buttonAnswer = typeof correctAnswer === 'number' ? parseInt(button.dataset.answer, 10) : button.dataset.answer;
-                if (buttonAnswer === correctAnswer) button.classList.add('correct');
+                if (buttonAnswer == correctAnswer) button.classList.add('correct');
             });
 
             if (isCorrect) {
@@ -737,8 +1094,19 @@
         function showFinalScore() {
             showScreen('end');
             const totalPossibleScore = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
-            
-            if (totalScore < totalPossibleScore * 0.6) {
+            updateStats(currentQuizType, totalScore, totalPossibleScore);
+            const percentage = totalScore / totalPossibleScore;
+
+            if (totalScore === totalPossibleScore && difficultySettings) {
+                awardGem(currentQuizType, difficultySettings.key, 'diamonds');
+                finalTitleEl.textContent = `¡PERFECTO, ${userName}! 💎`;
+                finalMotivationEl.textContent = "¡Has ganado un Diamante por tu increíble desempeño!";
+            } else if (percentage >= 0.8 && difficultySettings) {
+                awardGem(currentQuizType, difficultySettings.key, 'rubies');
+                finalTitleEl.textContent = `¡EXCELENTE, ${userName}! 🔴`;
+                finalMotivationEl.textContent = "¡Casi perfecto! Has ganado un Rubí por tu gran esfuerzo.";
+            }
+            else if (totalScore < totalPossibleScore * 0.6) {
                 finalTitleEl.textContent = `¡Gran Esfuerzo, ${userName}!`;
                 finalMotivationEl.textContent = "Sigue practicando y serás imparable. ¡Cada día eres más inteligente!";
             } else {
@@ -750,7 +1118,6 @@
             summaryTextEl.textContent = `${quizSettings[currentQuizType].name}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
         }
         
-        // --- Gesture Handling ---
         function handleSwipe(currentScreen) {
             if (touchStartX < 50 && touchEndX > touchStartX + 100) {
                 if (currentScreen === 'difficulty') {
@@ -774,12 +1141,14 @@
         mathMenuBtn.addEventListener('click', () => showScreen('mathType'));
         spanishMenuBtn.addEventListener('click', () => showScreen('spanishType'));
         englishMenuBtn.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+        gemsMenuBtn.addEventListener('click', showGemsScreen);
+        statsMenuBtn.addEventListener('click', showStatsScreen);
+        backToMainFromGemsBtn.addEventListener('click', () => showScreen('mainMenu'));
+        backToMainFromStatsBtn.addEventListener('click', () => showScreen('mainMenu'));
+        closePrizeAlertBtn.addEventListener('click', () => screens.prizeAlert.classList.add('hidden'));
 
-        mathTypeButtons.forEach(button => {
-            button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
-        });
-        spanishTypeButtons.forEach(button => {
-            button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+        [...mathTypeButtons, ...spanishTypeButtons].forEach(button => {
+             button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
         });
 
         backToMainMenuBtn.addEventListener('click', () => showScreen('mainMenu'));
@@ -796,9 +1165,9 @@
         });
 
         backBtn.addEventListener('click', () => {
-            if (currentQuizType === 'english') {
+            if (['english'].includes(currentQuizType)) {
                 showScreen('mainMenu');
-            } else if (currentQuizType === 'reading') {
+            } else if (['reading'].includes(currentQuizType)) {
                 showScreen('spanishType');
             } else {
                 showScreen('mathType');
@@ -807,12 +1176,28 @@
 
         backFromQuizBtn.addEventListener('click', () => {
             resetState();
-            backBtn.click(); // Simulate click on the main back button for consistency
+            backBtn.click(); 
+        });
+        
+        backFromDivisionGameBtn.addEventListener('click', () => {
+            resetState();
+            showScreen('difficulty');
         });
 
         backFromReadingBtn.addEventListener('click', () => {
             resetState();
             showScreen('spanishType');
+        });
+        
+        pauseResumeBtn.addEventListener('click', () => {
+            isReadingPaused = !isReadingPaused;
+            if (isReadingPaused) {
+                pauseKaraoke();
+                pauseResumeBtn.textContent = 'Continuar';
+            } else {
+                resumeKaraoke();
+                pauseResumeBtn.textContent = 'Pausar';
+            }
         });
 
         restartBtn.addEventListener('click', () => {
@@ -831,7 +1216,6 @@
             });
         });
 
-        // --- Initial Load ---
         initializeUser();
     </script>
 </body>
