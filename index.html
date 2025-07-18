@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende Rapido</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- === App Icons === -->
+    <!-- iOS Icon -->
+    <link rel="apple-touch-icon" href="https://placehold.co/180x180/8B5CF6/FFFFFF?text=Q">
+    
+    <!-- Web App Manifest (with Android Icons) -->
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUXVpeiBFZHVjYXRpdm8iLCJzaG9ydF9uYW1lIjoiUXVpeiBFZHUiLCJkZXNjcmlwdGlvbiI6IlByYWN0aWNhIG1hdGVtw6F0aWNhcyBlIGluZ2zDqXMgZGUgZm9ybWEgZGl2ZXJ0aWRhLiIsImljb25zIjpbeyJzcmMiOiJodHRwczovL3BsYWNlaG9sZC5jby8xOTJ4MTkyLzhCNUNGNi9GRkZGRkY/dGV4dD1RIiwidHlwZSI6ImltYWdlL3BuZyIsInNpemVzIjoiMTkyeDE5MiJ9LHsic3JjIjoiaHR0cHM6Ly9wbGFjZWhvbGQuY28vNTEyeDUxMi84QjVDRjYvRkZGRkZGP3RleHQ9USIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjUxMng1MTIifV0sInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjRjNGNEY2IiwidGhlbWVfY29sb3IiOiIjNEI1RUYzIn0=">
+    <meta name="theme-color" content="#4B5563">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .main-container {
+            max-width: 500px;
+            width: 90%;
+        }
+        .btn-answer.correct {
+            background-color: #22c55e !important;
+            border-color: #16a34a !important;
+            color: white !important;
+            transform: scale(1.05);
+        }
+        .btn-answer.incorrect {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: white !important;
+        }
+        .btn-answer:disabled { opacity: 0.8; }
+        #timer-progress {
+            stroke-dasharray: 283;
+            stroke-dashoffset: 0;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 1s linear;
+        }
+        /* Fade-in animation for screens */
+        .screen-fade-in {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Karaoke style highlight */
+        .reading-highlight {
+            background-color: #fde047; /* yellow-300 */
+            border-radius: 3px;
+            padding: 0 2px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="main-container text-center bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+        
+        <!-- Name Input Screen -->
+        <div id="name-input-screen">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">¡Bienvenido/a!</h1>
+            <p class="text-gray-600 mb-6">Para empezar, por favor ingresa tu nombre.</p>
+            <input type="text" id="name-input" placeholder="Escribe tu nombre aquí" class="w-full px-4 py-3 border border-gray-300 rounded-lg mb-4 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <button id="start-with-name-btn" class="w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Continuar</button>
+        </div>
+
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen" class="hidden">
+            <h1 id="welcome-title" class="text-3xl sm:text-4xl font-bold text-gray-700 mb-2"></h1>
+            <p class="text-gray-600 mb-8">¿Listo para entrenar tu mente? Elige una materia.</p>
+            <div class="space-y-4">
+                 <button id="math-menu-btn" class="w-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Matemáticas</button>
+                 <button id="spanish-menu-btn" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Español</button>
+                 <button id="english-menu-btn" data-quiz-type="english" class="w-full bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Inglés</button>
+            </div>
+        </div>
+        
+        <!-- Math Type Selection Screen -->
+        <div id="math-type-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">Matemáticas</h1>
+            <p class="text-gray-600 mb-8">Elige un tipo de ejercicio.</p>
+            <div class="space-y-4">
+                 <button data-quiz-type="multiplication" class="w-full bg-gradient-to-br from-indigo-500 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Tablas de Multiplicar</button>
+                 <button data-quiz-type="addition" class="w-full bg-gradient-to-br from-blue-500 to-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Sumas</button>
+                 <button data-quiz-type="subtraction" class="w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Restas</button>
+            </div>
+            <button id="back-to-main-menu-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+        </div>
+        
+        <!-- Spanish Type Selection Screen -->
+        <div id="spanish-type-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">Español</h1>
+            <p class="text-gray-600 mb-8">Elige un tipo de ejercicio.</p>
+            <div class="space-y-4">
+                 <button data-quiz-type="reading" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Lectura de Comprensión</button>
+            </div>
+            <button id="back-to-main-menu-btn-2" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+        </div>
+
+        <!-- Difficulty Screen -->
+        <div id="difficulty-screen" class="hidden">
+            <h1 id="difficulty-title" class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4"></h1>
+            <p class="text-gray-600 mb-8">Selecciona un nivel de dificultad</p>
+            <div id="difficulty-buttons-container" class="space-y-4">
+                 <!-- Buttons are added dynamically -->
+            </div>
+             <button id="back-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver</button>
+        </div>
+        
+        <!-- Reading Screen -->
+        <div id="reading-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button id="back-from-reading-btn" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver</button>
+                <div class="w-12"></div> <!-- Spacer -->
+            </div>
+            <h1 id="reading-title" class="text-2xl font-bold text-gray-800 mb-4 -mt-6"></h1>
+            <div id="reading-text-container" class="text-left text-lg text-gray-700 h-64 overflow-y-auto p-4 border rounded-lg bg-gray-50 mb-4"></div>
+            <div id="reading-timer-container" class="text-lg font-semibold text-gray-600 mb-4">Tiempo de lectura: <span id="reading-timer"></span></div>
+            <button id="start-reading-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Empezar a Leer</button>
+        </div>
+        
+        <!-- Round Transition Screen -->
+        <div id="round-transition-screen" class="hidden">
+            <h2 id="round-end-title" class="text-3xl font-bold text-gray-800 mb-2"></h2>
+            <p id="round-score" class="text-xl text-gray-600 mb-6"></p>
+            <div class="space-y-3">
+                <button id="next-round-btn" class="w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                    Siguiente Ronda
+                </button>
+                <button id="exit-session-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">
+                    Salir al Menú
+                </button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4 text-gray-600 font-semibold">
+                <button id="back-from-quiz-btn" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Salir</button>
+                <span id="question-counter"></span>
+                <span id="score">Puntaje: 0</span>
+            </div>
+            <div id="timer-container" class="relative w-24 h-24 mx-auto mb-4">
+                <svg class="w-full h-full" viewBox="0 0 100 100">
+                    <circle class="text-gray-200" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                    <circle id="timer-progress" class="text-indigo-600" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                </svg>
+                <span id="timer-text" class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-3xl font-bold text-gray-800"></span>
+            </div>
+            <div id="question-container" class="mb-8">
+                <p id="question-text" class="text-2xl sm:text-4xl font-bold text-gray-800 h-16 flex items-center justify-center"></p>
+            </div>
+            <div id="answers-container" class="grid grid-cols-2 gap-4"></div>
+            <div id="feedback-container" class="mt-6 h-8 text-xl font-bold"></div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="hidden">
+            <h2 id="final-title" class="text-3xl font-bold text-gray-800 mb-2"></h2>
+            <p id="final-score" class="text-xl text-gray-600 mb-2"></p>
+            <p id="final-motivation" class="text-lg text-gray-500 mb-4"></p>
+            <p id="summary-text" class="text-sm text-gray-400 mb-6"></p>
+            <button id="restart-btn" class="w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+                Jugar de Nuevo
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- PWA Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            const serviceWorkerCode = `
+                const CACHE_NAME = 'math-spanish-quiz-cache-v4';
+                const urlsToCache = ['/'];
+                self.addEventListener('install', event => {
+                    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+                    self.skipWaiting();
+                });
+                self.addEventListener('fetch', event => {
+                    if (event.request.mode === 'navigate') {
+                        event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+                    }
+                });
+            `;
+            const blob = new Blob([serviceWorkerCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(swUrl).then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+
+        // --- DOM Elements ---
+        const screens = {
+            nameInput: document.getElementById('name-input-screen'),
+            mainMenu: document.getElementById('main-menu-screen'),
+            mathType: document.getElementById('math-type-screen'),
+            spanishType: document.getElementById('spanish-type-screen'),
+            difficulty: document.getElementById('difficulty-screen'),
+            reading: document.getElementById('reading-screen'),
+            quiz: document.getElementById('quiz-screen'),
+            roundTransition: document.getElementById('round-transition-screen'),
+            end: document.getElementById('end-screen')
+        };
+        const nameInputEl = document.getElementById('name-input');
+        const startWithNameBtn = document.getElementById('start-with-name-btn');
+        const welcomeTitleEl = document.getElementById('welcome-title');
+        const mathMenuBtn = document.getElementById('math-menu-btn');
+        const spanishMenuBtn = document.getElementById('spanish-menu-btn');
+        const englishMenuBtn = document.getElementById('english-menu-btn');
+        const mathTypeButtons = screens.mathType.querySelectorAll('[data-quiz-type]');
+        const spanishTypeButtons = screens.spanishType.querySelectorAll('[data-quiz-type]');
+        const backToMainMenuBtn = document.getElementById('back-to-main-menu-btn');
+        const backToMainMenuBtn2 = document.getElementById('back-to-main-menu-btn-2');
+        const difficultyTitle = document.getElementById('difficulty-title');
+        const difficultyButtonsContainer = document.getElementById('difficulty-buttons-container');
+        const backBtn = document.getElementById('back-btn');
+        const backFromReadingBtn = document.getElementById('back-from-reading-btn');
+        const backFromQuizBtn = document.getElementById('back-from-quiz-btn');
+        const readingTitleEl = document.getElementById('reading-title');
+        const readingTextContainerEl = document.getElementById('reading-text-container');
+        const readingTimerEl = document.getElementById('reading-timer');
+        const startReadingBtn = document.getElementById('start-reading-btn');
+        const nextRoundBtn = document.getElementById('next-round-btn');
+        const exitSessionBtn = document.getElementById('exit-session-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionCounterEl = document.getElementById('question-counter');
+        const scoreEl = document.getElementById('score');
+        const questionTextEl = document.getElementById('question-text');
+        const answersContainer = document.getElementById('answers-container');
+        const feedbackContainer = document.getElementById('feedback-container');
+        const roundEndTitleEl = document.getElementById('round-end-title');
+        const roundScoreEl = document.getElementById('round-score');
+        const finalTitleEl = document.getElementById('final-title');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMotivationEl = document.getElementById('final-motivation');
+        const summaryTextEl = document.getElementById('summary-text');
+        const timerProgress = document.getElementById('timer-progress');
+        const timerText = document.getElementById('timer-text');
+
+        // --- Content Data ---
+        const englishData = {
+            colors: { 'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise' },
+            animals: { 'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog' },
+            verbs: { 'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen' }
+        };
+        const readingData = [
+            {
+                title: 'El Universo Creativo de Roblox',
+                text: 'Roblox no es solo un juego, es una plataforma gigante donde millones de personas crean y comparten sus propias aventuras. Desde su lanzamiento, ha permitido a los jugadores convertirse en desarrolladores, usando herramientas sencillas para construir mundos enteros. Cada día, se publican miles de juegos nuevos, conocidos como "experiencias". Esto significa que siempre hay algo nuevo que descubrir, ya sea un juego de rol, una carrera de obstáculos o una simulación de vida. La moneda virtual del juego, llamada Robux, se puede ganar o comprar para personalizar avatares y obtener ventajas en las experiencias.',
+                wpm: 100,
+                questions: [
+                    { q: '¿Qué es Roblox principalmente?', a: 'Una plataforma para crear juegos', o: ['Una película', 'Una red social', 'Una tienda de ropa'] },
+                    { q: '¿Cómo se llaman los juegos dentro de Roblox?', a: 'Experiencias', o: ['Niveles', 'Mundos', 'Mapas'] },
+                    { q: '¿Cuál es el nombre de la moneda virtual de Roblox?', a: 'Robux', o: ['Puntos', 'Monedas', 'Gemas'] }
+                ]
+            },
+            {
+                title: 'Free Fire y su Estrategia de Supervivencia',
+                text: 'Free Fire es un popular juego de "battle royale" para móviles donde 50 jugadores caen en una isla y luchan hasta que solo uno queda en pie. La clave del éxito no es solo disparar, sino también la estrategia. Los jugadores deben encontrar armas y equipo rápidamente, mientras se mueven hacia la "zona segura", un área que se va haciendo más pequeña con el tiempo. El juego es famoso por sus personajes, cada uno con habilidades especiales que pueden cambiar el rumbo de una partida. Además, las colaboraciones con artistas y marcas famosas, como J Balvin o McLaren, traen eventos y skins exclusivas que mantienen el juego siempre fresco e interesante.',
+                wpm: 110,
+                questions: [
+                    { q: '¿Cuántos jugadores participan en una partida de Free Fire?', a: '50', o: ['100', '25', '75'] },
+                    { q: '¿Qué es la "zona segura"?', a: 'Un área que se hace más pequeña', o: ['Un lugar para esconderse', 'Una tienda de armas', 'El punto de inicio'] },
+                    { q: '¿Qué hace que los personajes de Free Fire sean especiales?', a: 'Tienen habilidades únicas', o: ['Son invisibles', 'Pueden volar', 'No necesitan armas'] }
+                ]
+            },
+            {
+                title: 'Warzone: Tácticas en el Campo de Batalla',
+                text: 'Call of Duty: Warzone es un juego de disparos masivo que combina la acción rápida de Call of Duty con la estrategia de un "battle royale". A diferencia de otros juegos, si un jugador es eliminado, tiene una segunda oportunidad en el "Gulag", un duelo 1 contra 1 donde el ganador puede volver a la partida. Warzone también destaca por su sistema de "loadouts", que permite a los jugadores pedir sus armas y ventajas personalizadas durante el juego. Los mapas son enormes y detallados, basados en lugares icónicos de la saga, lo que obliga a los equipos a comunicarse y planificar sus movimientos para controlar zonas clave y asegurar la victoria.',
+                wpm: 115,
+                questions: [
+                    { q: '¿Qué es el "Gulag" en Warzone?', a: 'Una segunda oportunidad para volver', o: ['La prisión final', 'Una tienda de armas', 'Un vehículo especial'] },
+                    { q: '¿Qué son los "loadouts"?', a: 'Armas personalizadas que se piden', o: ['Mapas secretos', 'Tipos de soldados', 'Misiones secundarias'] },
+                    { q: '¿Qué es crucial para la victoria en Warzone?', a: 'La comunicación y planificación', o: ['Correr sin parar', 'Esconderse siempre', 'Usar solo un tipo de arma'] }
+                ]
+            },
+            {
+                title: 'Fortnite: Más que un Battle Royale',
+                text: 'Fortnite ha revolucionado el mundo de los videojuegos con sus famosas "temporadas". Cada pocos meses, el juego cambia por completo, introduciendo un nuevo tema, personajes y cambios en el mapa. Pero lo más increíble son sus eventos en vivo. Millones de jugadores se han conectado al mismo tiempo para ver conciertos de artistas como Travis Scott y Ariana Grande, o para participar en eventos que cambian la historia del juego para siempre. Además del modo de batalla, existe el "Modo Creativo", donde los jugadores pueden construir sus propias islas y juegos, demostrando que Fortnite es también una poderosa herramienta de creatividad.',
+                wpm: 110,
+                questions: [
+                    { q: '¿Qué cambia en Fortnite con cada temporada?', a: 'El tema y el mapa', o: ['Las reglas del juego', 'El precio del juego', 'Los controles'] },
+                    { q: '¿Qué tipo de eventos en vivo ha tenido Fortnite?', a: 'Conciertos de artistas famosos', o: ['Competencias de cocina', 'Carreras de autos reales', 'Obras de teatro'] },
+                    { q: '¿Qué permite hacer el "Modo Creativo"?', a: 'Construir islas y juegos propios', o: ['Ver películas', 'Chatear con amigos', 'Comprar ropa virtual'] }
+                ]
+            },
+            {
+                title: 'Minecraft: Construyendo tu Propia Aventura',
+                text: 'Minecraft es un juego único que celebra la creatividad y la supervivencia. En su modo "Supervivencia", los jugadores deben explorar el mundo, recolectar recursos como madera y piedra, y construir un refugio para protegerse de los monstruos que aparecen de noche. Por otro lado, el modo "Creativo" ofrece recursos ilimitados, permitiendo a los jugadores construir cualquier cosa que puedan imaginar sin preocuparse por los peligros. Grandes actualizaciones, como la de "Caves & Cliffs", han añadido nuevas cuevas y montañas, haciendo la exploración aún más emocionante. Minecraft demuestra que los límites solo están en tu imaginación.',
+                wpm: 105,
+                questions: [
+                    { q: '¿Cuál es el objetivo principal en el modo "Supervivencia"?', a: 'Protegerse de los monstruos', o: ['Ganar carreras', 'Resolver acertijos', 'Volar por el mapa'] },
+                    { q: '¿Qué ofrece el modo "Creativo"?', a: 'Recursos ilimitados para construir', o: ['Misiones difíciles', 'Monstruos más fuertes', 'Tiempo limitado'] },
+                    { q: '¿Qué añadió la actualización "Caves & Cliffs"?', a: 'Nuevas cuevas y montañas', o: ['Nuevos planetas', 'Coches y aviones', 'Nuevos personajes'] }
+                ]
+            },
+            {
+                title: 'La Vida sin Fin de GTA Online',
+                text: 'Grand Theft Auto V es famoso por su increíble modo multijugador, GTA Online. En este modo, los jugadores crean su propio personaje y exploran la ciudad de Los Santos junto a otras personas de todo el mundo. Lo que hace a GTA Online tan especial es su constante evolución. A lo largo de los años, se han añadido innumerables actualizaciones gratuitas con nuevos vehículos, misiones, negocios y atracos espectaculares. Los jugadores pueden convertirse en directores de un club nocturno, contrabandistas de armas o participar en carreras callejeras. Esta variedad de actividades ha mantenido al juego popular durante más de una década, creando una comunidad muy activa.',
+                wpm: 120,
+                questions: [
+                    { q: '¿En qué ciudad se desarrolla GTA Online?', a: 'Los Santos', o: ['Liberty City', 'Vice City', 'San Fierro'] },
+                    { q: '¿Qué ha mantenido popular a GTA Online por tanto tiempo?', a: 'Sus constantes actualizaciones gratuitas', o: ['Que es un juego fácil', 'Que no tiene misiones', 'Que solo se puede jugar solo'] },
+                    { q: '¿Qué es una de las actividades que se pueden hacer en el juego?', a: 'Dirigir un club nocturno', o: ['Construir casas', 'Adoptar mascotas', 'Ir a la escuela'] }
+                ]
+            }
+        ];
+
+        // --- Quiz Settings ---
+        const quizSettings = {
+            multiplication: { name: 'Tablas de Multiplicar', difficulties: { easy: { name: 'Fácil', tables: { min: 2, max: 5 }, timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', tables: { min: 2, max: 9 }, timeLimit: 10, optionLogic: 'plausible' }, hard: { name: 'Difícil', tables: { min: 2, max: 9 }, timeLimit: 7, optionLogic: 'close' }}},
+            addition: { name: 'Sumas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [100, 999], timeLimit: 10, optionLogic: 'close' }}},
+            subtraction: { name: 'Restas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [50, 200], timeLimit: 8, optionLogic: 'close' }}},
+            english: { name: 'Inglés', difficulties: { easy: { name: 'Fácil (Colores)', timeLimit: 15, optionLogic: 'plausible', data: englishData.colors }, normal: { name: 'Normal (Animales)', timeLimit: 12, optionLogic: 'plausible', data: englishData.animals }, hard: { name: 'Difícil (Verbos)', timeLimit: 10, optionLogic: 'close', data: englishData.verbs }}},
+            reading: { name: 'Lectura de Comprensión' }
+        };
+        
+        // --- Quiz State ---
+        let userName = '';
+        let currentQuizType;
+        let difficultySettings;
+        let questions = [];
+        let sessionContent = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalScore = 0;
+        let currentRound = 1;
+        let TOTAL_ROUNDS = 3;
+        let QUESTIONS_PER_ROUND = 10;
+        let timer;
+        let readingTimerInterval;
+        let isReadingActive = false;
+        let timeLeft;
+
+        // --- Gesture State ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const FULL_DASH_ARRAY = 283;
+
+        // --- Functions ---
+
+        function showScreen(screenName) {
+            Object.values(screens).forEach(screen => screen.classList.add('hidden'));
+            const screenToShow = screens[screenName];
+            screenToShow.classList.remove('hidden');
+            screenToShow.classList.add('screen-fade-in');
+            screenToShow.addEventListener('animationend', () => {
+                screenToShow.classList.remove('screen-fade-in');
+            }, { once: true });
+        }
+
+        function initializeUser() {
+            const savedName = localStorage.getItem('quizUserName');
+            if (savedName) {
+                userName = savedName;
+                welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+                showScreen('mainMenu');
+            } else {
+                showScreen('nameInput');
+            }
+        }
+
+        function saveUserAndStart() {
+            const name = nameInputEl.value.trim();
+            if (name) {
+                userName = name;
+                localStorage.setItem('quizUserName', name);
+                welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+                showScreen('mainMenu');
+            } else {
+                nameInputEl.classList.add('border-red-500');
+            }
+        }
+
+        function selectQuizType(type) {
+            currentQuizType = type;
+            if (currentQuizType === 'reading') {
+                difficultySettings = null; // No difficulty for reading
+                startSession();
+            } else {
+                difficultyTitle.textContent = quizSettings[type].name;
+                
+                difficultyButtonsContainer.innerHTML = '';
+                const levels = quizSettings[type].difficulties;
+                const gradients = {
+                    easy: 'from-green-500 to-emerald-600',
+                    normal: 'from-yellow-500 to-amber-600',
+                    hard: 'from-red-500 to-rose-600'
+                };
+                Object.keys(levels).forEach(level => {
+                    const button = document.createElement('button');
+                    button.dataset.difficulty = level;
+                    button.className = `w-full bg-gradient-to-br ${gradients[level]} text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`;
+                    button.textContent = levels[level].name;
+                    button.addEventListener('click', () => selectDifficulty(level));
+                    difficultyButtonsContainer.appendChild(button);
+                });
+
+                showScreen('difficulty');
+            }
+        }
+        
+        function selectDifficulty(level) {
+            difficultySettings = quizSettings[currentQuizType].difficulties[level];
+            startSession();
+        }
+
+        function startSession() {
+            totalScore = 0;
+            currentRound = 1;
+            sessionContent = [];
+
+            if (currentQuizType === 'english') {
+                TOTAL_ROUNDS = 3;
+                QUESTIONS_PER_ROUND = 10;
+                const data = difficultySettings.data;
+                let allWords = Object.keys(data);
+                for (let i = allWords.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
+                }
+                const totalQuestionsNeeded = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
+                sessionContent = allWords.slice(0, totalQuestionsNeeded);
+            } else if (currentQuizType === 'reading') {
+                sessionContent = [...readingData].sort(() => Math.random() - 0.5);
+                TOTAL_ROUNDS = sessionContent.length;
+                QUESTIONS_PER_ROUND = sessionContent[0].questions.length;
+            } else {
+                TOTAL_ROUNDS = 3;
+                QUESTIONS_PER_ROUND = 10;
+            }
+            startRound();
+        }
+        
+        function startRound() {
+            score = 0;
+            currentQuestionIndex = 0;
+            generateQuestions();
+
+            if (currentQuizType === 'reading') {
+                setupReadingScreen();
+            } else {
+                showScreen('quiz');
+                showNextQuestion();
+            }
+        }
+
+        function setupReadingScreen() {
+            const reading = sessionContent[currentRound - 1];
+            readingTitleEl.textContent = reading.title;
+            
+            const words = reading.text.split(' ');
+            readingTextContainerEl.innerHTML = words.map(word => `<span>${word} </span>`).join('');
+            
+            const wordCount = words.length;
+            const timeInSeconds = Math.round((wordCount / reading.wpm) * 60);
+            readingTimerEl.textContent = `${timeInSeconds}s`;
+            
+            startReadingBtn.onclick = () => {
+                startReadingBtn.disabled = true;
+                startReadingBtn.classList.add('opacity-50');
+                startKaraoke(words, timeInSeconds);
+            };
+            startReadingBtn.disabled = false;
+            startReadingBtn.classList.remove('opacity-50');
+            
+            showScreen('reading');
+        }
+
+        function startKaraoke(words, totalTime) {
+            isReadingActive = true;
+            const wordSpans = readingTextContainerEl.querySelectorAll('span');
+            const timePerWord = (totalTime * 1000) / words.length;
+            let wordIndex = 0;
+            let timeLeft = totalTime;
+
+            readingTimerEl.textContent = `${timeLeft}s`;
+            const timerDiv = document.getElementById('reading-timer-container');
+            timerDiv.style.display = 'block';
+
+            readingTimerInterval = setInterval(() => {
+                timeLeft--;
+                readingTimerEl.textContent = `${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(readingTimerInterval);
+                }
+            }, 1000);
+
+            function highlightNext() {
+                if (!isReadingActive) return; // Stop the chain if user goes back
+                if (wordIndex > 0) {
+                    wordSpans[wordIndex - 1].classList.remove('reading-highlight');
+                }
+                if (wordIndex < wordSpans.length) {
+                    wordSpans[wordIndex].classList.add('reading-highlight');
+                    wordSpans[wordIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    wordIndex++;
+                    setTimeout(highlightNext, timePerWord);
+                } else {
+                    isReadingActive = false;
+                    clearInterval(readingTimerInterval);
+                    timerDiv.style.display = 'none';
+                    setTimeout(() => {
+                        showScreen('quiz');
+                        showNextQuestion();
+                    }, 1000);
+                }
+            }
+            highlightNext();
+        }
+
+        function generateQuestions() {
+            questions = [];
+            if (currentQuizType === 'english') {
+                const data = difficultySettings.data;
+                const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
+                const endIndex = startIndex + QUESTIONS_PER_ROUND;
+                const roundWords = sessionContent.slice(startIndex, endIndex);
+
+                questions = roundWords.map(word => ({
+                    text: `¿Cómo se dice "${word}"?`,
+                    answer: data[word]
+                }));
+            } else if (currentQuizType === 'reading') {
+                const reading = sessionContent[currentRound - 1];
+                questions = reading.questions.map(q => ({
+                    text: q.q,
+                    answer: q.a,
+                    options: [...q.o, q.a].sort(() => Math.random() - 0.5)
+                }));
+            } else {
+                for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+                    questions.push(generateMathQuestion());
+                }
+            }
+        }
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function generateMathQuestion() {
+            let num1, num2, answer, text;
+            const operator = { multiplication: '×', addition: '+', subtraction: '-'}[currentQuizType];
+            
+            if (currentQuizType === 'multiplication') {
+                const { min, max } = difficultySettings.tables;
+                num1 = getRandomNumber(min, max);
+                num2 = getRandomNumber(1, 10);
+                answer = num1 * num2;
+            } else {
+                const [min, max] = difficultySettings.range;
+                num1 = getRandomNumber(min, max);
+                num2 = getRandomNumber(min, max);
+                if (currentQuizType === 'subtraction' && num1 < num2) [num1, num2] = [num2, num1];
+                answer = currentQuizType === 'addition' ? num1 + num2 : num1 - num2;
+            }
+            text = `${num1} ${operator} ${num2} = ?`;
+            return { text, answer };
+        }
+
+        function showNextQuestion() {
+            resetState();
+            if (currentQuestionIndex < questions.length) {
+                const question = questions[currentQuestionIndex];
+                questionCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+                scoreEl.textContent = `Puntaje: ${score}`;
+                questionTextEl.textContent = question.text;
+
+                const options = question.options || generateOptions(question.answer);
+                options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('btn-answer', 'w-full', 'bg-gray-50', 'border-2', 'border-gray-200', 'text-gray-700', 'font-semibold', 'py-4', 'px-2', 'rounded-lg', 'hover:bg-white', 'hover:border-indigo-400', 'hover:shadow-md', 'focus:outline-none', 'transition-all', 'duration-200', 'text-xl');
+                    button.dataset.answer = option;
+                    button.addEventListener('click', handleAnswerSelection);
+                    answersContainer.appendChild(button);
+                });
+                
+                if (currentQuizType !== 'reading') {
+                    screens.quiz.querySelector('#timer-container').style.display = 'block';
+                    startTimer();
+                } else {
+                    screens.quiz.querySelector('#timer-container').style.display = 'none';
+                }
+            } else {
+                handleRoundEnd();
+            }
+        }
+        
+        function handleRoundEnd() {
+            totalScore += score;
+            if (currentRound < TOTAL_ROUNDS) {
+                const motivationalMessages = [
+                    `¡Ánimo, ${userName}! Los campeones no se rinden. ¡La próxima ronda es tuya!`,
+                    `¡No te preocupes, ${userName}! Cada error es una oportunidad para aprender. ¡Vamos!`,
+                    `¡Sigue adelante! Los desafíos te hacen más inteligente. ¡A por la siguiente!`
+                ];
+                const goodJobMessages = [
+                    `¡Ronda ${currentRound} Completada!`,
+                    `¡Excelente trabajo, ${userName}!`,
+                    `¡Sigue así, campeón!`
+                ];
+
+                if (score < questions.length / 2) {
+                    const message = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+                    roundEndTitleEl.textContent = message;
+                } else {
+                    const message = goodJobMessages[Math.floor(Math.random() * goodJobMessages.length)];
+                    roundEndTitleEl.textContent = message;
+                }
+                
+                roundScoreEl.textContent = `Tu puntaje en esta ronda: ${score} de ${questions.length}`;
+                showScreen('roundTransition');
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function generateOptions(correctAnswer) {
+            const options = new Set([correctAnswer]);
+            if (currentQuizType === 'english') {
+                const allAnswers = Object.values(difficultySettings.data);
+                while (options.size < 4) {
+                    const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
+                    options.add(randomAnswer);
+                }
+            } else {
+                while (options.size < 4) {
+                    let offset;
+                    const randomFactor = Math.random() < 0.5 ? -1 : 1;
+                    switch(difficultySettings.optionLogic) {
+                        case 'wide': offset = (Math.floor(Math.random() * 8) + 3) * randomFactor; break;
+                        case 'close': offset = (Math.floor(Math.random() * 2) + 1) * randomFactor; break;
+                        default: offset = (Math.floor(Math.random() * 5) + 1) * randomFactor; break;
+                    }
+                    let wrongAnswer = correctAnswer + offset;
+                    if (wrongAnswer >= 0 && wrongAnswer !== correctAnswer) {
+                        options.add(wrongAnswer);
+                    }
+                }
+            }
+            return Array.from(options).sort(() => Math.random() - 0.5);
+        }
+        
+        function resetState() {
+            clearInterval(timer);
+            clearInterval(readingTimerInterval);
+            isReadingActive = false;
+            feedbackContainer.textContent = '';
+            feedbackContainer.classList.remove('text-red-500', 'text-green-500');
+            while (answersContainer.firstChild) {
+                answersContainer.removeChild(answersContainer.firstChild);
+            }
+        }
+
+        function handleAnswerSelection(e) {
+            clearInterval(timer);
+            const selectedButton = e.target;
+            const selectedAnswer = typeof questions[currentQuestionIndex].answer === 'number'
+                ? parseInt(selectedButton.dataset.answer, 10)
+                : selectedButton.dataset.answer;
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            showFeedback(selectedAnswer === correctAnswer, correctAnswer, selectedButton);
+        }
+
+        function handleTimeUp() {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            showFeedback(false, correctAnswer);
+        }
+        
+        function showFeedback(isCorrect, correctAnswer, selectedButton = null) {
+            Array.from(answersContainer.children).forEach(button => {
+                button.disabled = true;
+                const buttonAnswer = typeof correctAnswer === 'number' ? parseInt(button.dataset.answer, 10) : button.dataset.answer;
+                if (buttonAnswer === correctAnswer) button.classList.add('correct');
+            });
+
+            if (isCorrect) {
+                score++;
+                feedbackContainer.textContent = '¡Correcto!';
+                feedbackContainer.classList.add('text-green-500');
+                if (selectedButton) selectedButton.classList.add('correct');
+            } else {
+                feedbackContainer.textContent = selectedButton ? `Incorrecto. La respuesta es ${correctAnswer}` : `¡Tiempo! La respuesta es ${correctAnswer}`;
+                feedbackContainer.classList.add('text-red-500');
+                if (selectedButton) selectedButton.classList.add('incorrect');
+            }
+            
+            scoreEl.textContent = `Puntaje: ${score}`;
+            currentQuestionIndex++;
+            setTimeout(showNextQuestion, 2000);
+        }
+
+        function startTimer() {
+            timeLeft = difficultySettings.timeLimit;
+            timerText.textContent = timeLeft;
+            timerProgress.style.strokeDashoffset = 0;
+            timerProgress.className = "stroke-current text-indigo-600";
+            setCircleDashoffset();
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                setCircleDashoffset();
+
+                if (timeLeft <= difficultySettings.timeLimit * 0.5) timerProgress.className = "stroke-current text-yellow-500";
+                if (timeLeft <= difficultySettings.timeLimit * 0.25) timerProgress.className = "stroke-current text-red-500";
+
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    handleTimeUp();
+                }
+            }, 1000);
+        }
+
+        function setCircleDashoffset() {
+            const timeFraction = timeLeft / difficultySettings.timeLimit;
+            const dashoffset = (1 - timeFraction) * FULL_DASH_ARRAY;
+            timerProgress.style.strokeDashoffset = dashoffset;
+        }
+        
+        function showFinalScore() {
+            showScreen('end');
+            const totalPossibleScore = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
+            
+            if (totalScore < totalPossibleScore * 0.6) {
+                finalTitleEl.textContent = `¡Gran Esfuerzo, ${userName}!`;
+                finalMotivationEl.textContent = "Sigue practicando y serás imparable. ¡Cada día eres más inteligente!";
+            } else {
+                finalTitleEl.textContent = `¡Felicidades, ${userName}!`;
+                finalMotivationEl.textContent = "¡Todo tu esfuerzo está dando frutos! Estás más que listo para la secundaria.";
+            }
+
+            finalScoreEl.textContent = `Tu puntaje total: ${totalScore} de ${totalPossibleScore}.`;
+            summaryTextEl.textContent = `${quizSettings[currentQuizType].name}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
+        }
+        
+        // --- Gesture Handling ---
+        function handleSwipe(currentScreen) {
+            if (touchStartX < 50 && touchEndX > touchStartX + 100) {
+                if (currentScreen === 'difficulty') {
+                    if (currentQuizType === 'english') {
+                        showScreen('mainMenu');
+                    } else {
+                        showScreen('mathType');
+                    }
+                } else if (currentScreen === 'mathType' || currentScreen === 'spanishType') {
+                    showScreen('mainMenu');
+                }
+            }
+        }
+        
+        // --- Event Listeners ---
+        startWithNameBtn.addEventListener('click', saveUserAndStart);
+        nameInputEl.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') saveUserAndStart();
+        });
+
+        mathMenuBtn.addEventListener('click', () => showScreen('mathType'));
+        spanishMenuBtn.addEventListener('click', () => showScreen('spanishType'));
+        englishMenuBtn.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+
+        mathTypeButtons.forEach(button => {
+            button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+        });
+        spanishTypeButtons.forEach(button => {
+            button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+        });
+
+        backToMainMenuBtn.addEventListener('click', () => showScreen('mainMenu'));
+        backToMainMenuBtn2.addEventListener('click', () => showScreen('mainMenu'));
+
+        nextRoundBtn.addEventListener('click', () => {
+            currentRound++;
+            startRound();
+        });
+        
+        exitSessionBtn.addEventListener('click', () => {
+             welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+             showScreen('mainMenu');
+        });
+
+        backBtn.addEventListener('click', () => {
+            if (currentQuizType === 'english') {
+                showScreen('mainMenu');
+            } else if (currentQuizType === 'reading') {
+                showScreen('spanishType');
+            } else {
+                showScreen('mathType');
+            }
+        });
+
+        backFromQuizBtn.addEventListener('click', () => {
+            resetState();
+            backBtn.click(); // Simulate click on the main back button for consistency
+        });
+
+        backFromReadingBtn.addEventListener('click', () => {
+            resetState();
+            showScreen('spanishType');
+        });
+
+        restartBtn.addEventListener('click', () => {
+            welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+            showScreen('mainMenu');
+        });
+
+        ['difficulty', 'mathType', 'spanishType'].forEach(screenId => {
+            screens[screenId].addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            screens[screenId].addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe(screenId);
+            });
+        });
+
+        // --- Initial Load ---
+        initializeUser();
+    </script>
+</body>
+</html>
