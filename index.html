@@ -63,16 +63,18 @@
             border-radius: 3px;
             padding: 0 2px;
         }
-        /* Drag and Drop styles */
-        .draggable-item {
-            touch-action: none;
-            cursor: grab;
+        /* Division Game styles */
+        .division-item {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .division-item.selected {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.7); /* blue-500 */
+            border-radius: 50%;
         }
         .drop-target {
             transition: background-color 0.2s;
-        }
-        .drop-target.over {
-            background-color: #dbeafe; /* blue-100 */
         }
     </style>
 </head>
@@ -243,7 +245,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v22';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v23';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -434,7 +436,7 @@
         let karaokeInterval;
         let isReadingPaused = false;
         let timeLeft;
-        let draggedItem = null;
+        let selectedItem = null;
         let gems = {};
         let stats = {};
 
@@ -878,11 +880,7 @@
             for (let i = 0; i < dividend; i++) {
                 const div = document.createElement('div');
                 div.textContent = item;
-                div.className = 'draggable-item text-3xl';
-                div.draggable = true;
-                div.addEventListener('dragstart', e => {
-                    draggedItem = e.target;
-                });
+                div.className = 'division-item text-3xl p-1';
                 itemsSourceContainerEl.appendChild(div);
             }
 
@@ -891,24 +889,28 @@
             for (let i = 0; i < divisor; i++) {
                 const div = document.createElement('div');
                 div.className = 'drop-target h-24 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-1 p-1';
-                div.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    e.target.closest('.drop-target').classList.add('over');
-                });
-                div.addEventListener('dragleave', e => {
-                    e.target.closest('.drop-target').classList.remove('over');
-                });
-                div.addEventListener('drop', e => {
-                    e.preventDefault();
-                    const target = e.target.closest('.drop-target');
-                    target.classList.remove('over');
-                    if (draggedItem) {
-                        target.appendChild(draggedItem);
-                        draggedItem = null;
-                    }
-                });
                 dropTargetsContainerEl.appendChild(div);
             }
+            
+            document.querySelectorAll('.division-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    if (selectedItem) {
+                        selectedItem.classList.remove('selected');
+                    }
+                    selectedItem = e.target;
+                    selectedItem.classList.add('selected');
+                });
+            });
+
+            document.querySelectorAll('.drop-target').forEach(target => {
+                target.addEventListener('click', (e) => {
+                    if (selectedItem) {
+                        e.currentTarget.appendChild(selectedItem);
+                        selectedItem.classList.remove('selected');
+                        selectedItem = null;
+                    }
+                });
+            });
             
             divisionGameFeedbackEl.textContent = '';
             checkDivisionBtn.onclick = () => {
