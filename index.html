@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v17';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v18';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -1142,16 +1142,12 @@
         
         function speak(text) {
             if (!('speechSynthesis' in window)) {
-                console.log("Speech synthesis not supported.");
                 return;
             }
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(text);
             if (englishVoice) {
                 utterance.voice = englishVoice;
-            } else {
-                loadEnglishVoice(); 
-                if(englishVoice) utterance.voice = englishVoice;
             }
             utterance.lang = 'en-US';
             utterance.rate = 0.9;
@@ -1256,9 +1252,9 @@
                     window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
                 }
             }
-            document.body.removeEventListener('click', warmUpSpeechSynthesis);
+            document.body.removeEventListener('click', warmUpSpeechSynthesis, true);
         }
-        document.body.addEventListener('click', warmUpSpeechSynthesis);
+        document.body.addEventListener('click', warmUpSpeechSynthesis, true);
 
 
         // --- Initial Load ---
