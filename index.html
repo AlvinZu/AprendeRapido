@@ -15,10 +15,10 @@
     
     <!-- === App Icons === -->
     <!-- iOS Icon -->
-    <link rel="apple-touch-icon" href="https://placehold.co/180x180/8B5CF6/FFFFFF?text=Q">
+    <link rel="apple-touch-icon" href="logo.png">
     
     <!-- Web App Manifest (with Android Icons) -->
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUXVpeiBFZHVjYXRpdm8iLCJzaG9ydF9uYW1lIjoiUXVpeiBFZHUiLCJkZXNjcmlwdGlvbiI6IlByYWN0aWNhIG1hdGVtw6F0aWNhcyBlIGluZ2zDqXMgZGUgZm9ybWEgZGl2ZXJ0aWRhLiIsImljb25zIjpbeyJzcmMiOiJodHRwczovL3BsYWNlaG9sZC5jby8xOTJ4MTkyLzhCNUNGNi9GRkZGRkY/dGV4dD1RIiwidHlwZSI6ImltYWdlL3BuZyIsInNpemVzIjoiMTkyeDE5MiJ9LHsic3JjIjoiaHR0cHM6Ly9wbGFjZWhvbGQuY28vNTEyeDUxMi84QjVDRjYvRkZGRkZGP3RleHQ9USIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjUxMng1MTIifV0sInN0YXJ0X3VybCI6Ii4iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjRjNGNEY2IiwidGhlbWVfY29sb3IiOiIjNEI1RUYzIn0=">
+    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiUXVpeiBFZHVjYXRpdm8iLCJzaG9ydF9uYW1lIjoiUXVpeiBFZHUiLCJkZXNjcmlwdGlvbiI6IlByYWN0aWNhIG1hdGVtw6F0aWNhcyBlIGluZ2zDqXMgZGUgZm9ybWEgZGl2ZXJ0aWRhLiIsImljb25zIjpbeyJzcmMiOiJsb2dvLnBuZyIsInR5cGUiOiJpbWFnZS9wbmciLCJzaXplcyI6IjE5MngxOTIifSx7InNyYyI6ImxvZ28ucG5nIiwidHlwZSI6ImltYWdlL3BuZyIsInNpemVzIjoiNTEyeDUxMiJ9XSwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNGM0Y0RjYiLCJ0aGVtZV9jb2xvciI6IiM0QjVFNjMiLCJvcmllbnRhdGlvbiI6InBvcnRyYWl0In0=">
     <meta name="theme-color" content="#4B5563">
 
     <style>
@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v19';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v20';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -1242,22 +1242,24 @@
         function loadEnglishVoice() {
             // This function tries to find an English voice.
             const voices = window.speechSynthesis.getVoices();
-            englishVoice = voices.find(voice => voice.lang === 'en-US' || voice.lang.startsWith('en'));
+            englishVoice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en'));
         }
 
-        // This function needs to be called after a user interaction to work on mobile.
         function warmUpSpeechSynthesis() {
             if ('speechSynthesis' in window) {
-                // If voices are not loaded yet, set a listener. Otherwise, load them.
-                if (window.speechSynthesis.getVoices().length === 0) {
-                    window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
+                if (window.speechSynthesis.getVoices().length > 0) {
+                    loadEnglishVoice();
                 } else {
-                     loadEnglishVoice();
+                    window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
                 }
+                // A silent utterance to "wake up" the synthesis engine on mobile
+                const utterance = new SpeechSynthesisUtterance('');
+                utterance.volume = 0;
+                window.speechSynthesis.speak(utterance);
             }
+            document.body.removeEventListener('click', warmUpSpeechSynthesis, true);
         }
-        // We call this when the user starts the app, which is a user interaction.
-        startWithNameBtn.addEventListener('click', warmUpSpeechSynthesis);
+        document.body.addEventListener('click', warmUpSpeechSynthesis, true);
 
 
         // --- Initial Load ---
