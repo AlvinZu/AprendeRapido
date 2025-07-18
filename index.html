@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v15';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v16';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -1053,12 +1053,12 @@
             if (isCorrect) {
                 score++;
                 if (currentQuizType === 'english') {
-                    feedbackContainer.textContent = correctAnswer;
+                    feedbackContainer.innerHTML = `<span class="text-green-500 text-3xl">✔</span>`;
                     speak(correctAnswer);
                 } else {
                     feedbackContainer.textContent = '¡Correcto!';
+                    feedbackContainer.classList.add('text-green-500');
                 }
-                feedbackContainer.classList.add('text-green-500');
                 if (selectedButton) selectedButton.classList.add('correct');
             } else {
                 feedbackContainer.textContent = selectedButton ? `Incorrecto. La respuesta es ${correctAnswer}` : `¡Tiempo! La respuesta es ${correctAnswer}`;
