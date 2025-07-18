@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v20';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v21';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -437,7 +437,6 @@
         let draggedItem = null;
         let gems = {};
         let stats = {};
-        let englishVoice = null;
 
         // --- Gesture State ---
         let touchStartX = 0;
@@ -1052,13 +1051,8 @@
 
             if (isCorrect) {
                 score++;
-                if (currentQuizType === 'english') {
-                    feedbackContainer.innerHTML = `<span class="text-green-500 text-3xl">✔</span>`;
-                    speak(correctAnswer);
-                } else {
-                    feedbackContainer.textContent = '¡Correcto!';
-                    feedbackContainer.classList.add('text-green-500');
-                }
+                feedbackContainer.textContent = '¡Correcto!';
+                feedbackContainer.classList.add('text-green-500');
                 if (selectedButton) selectedButton.classList.add('correct');
             } else {
                 feedbackContainer.textContent = selectedButton ? `Incorrecto. La respuesta es ${correctAnswer}` : `¡Tiempo! La respuesta es ${correctAnswer}`;
@@ -1140,20 +1134,6 @@
             }
         }
         
-        function speak(text) {
-            if (!('speechSynthesis' in window)) {
-                return;
-            }
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-            }
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
-        }
-
         // --- Event Listeners ---
         startWithNameBtn.addEventListener('click', saveUserAndStart);
         nameInputEl.addEventListener('keyup', (e) => {
@@ -1237,30 +1217,6 @@
                 handleSwipe(screenId);
             });
         });
-
-        // --- Speech Synthesis Loader ---
-        function loadEnglishVoice() {
-            // This function tries to find an English voice.
-            const voices = window.speechSynthesis.getVoices();
-            englishVoice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en'));
-        }
-
-        function warmUpSpeechSynthesis() {
-            if ('speechSynthesis' in window) {
-                if (window.speechSynthesis.getVoices().length > 0) {
-                    loadEnglishVoice();
-                } else {
-                    window.speechSynthesis.onvoiceschanged = loadEnglishVoice;
-                }
-                // A silent utterance to "wake up" the synthesis engine on mobile
-                const utterance = new SpeechSynthesisUtterance('');
-                utterance.volume = 0;
-                window.speechSynthesis.speak(utterance);
-            }
-            document.body.removeEventListener('click', warmUpSpeechSynthesis, true);
-        }
-        document.body.addEventListener('click', warmUpSpeechSynthesis, true);
-
 
         // --- Initial Load ---
         initializeUser();
