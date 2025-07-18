@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v21';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v22';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -537,10 +537,20 @@
                             if(levelGems.diamonds > 0 || levelGems.rubies > 0) {
                                 const levelDiv = document.createElement('div');
                                 levelDiv.className = 'ml-4 text-gray-700';
+                                let retryButtonHTML = '';
+                                if(levelGems.rubies > 0) {
+                                    retryButtonHTML = `<button data-retry-type="${type}" data-retry-level="${level}" class="retry-btn text-xs bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600 transition-colors">Mejorar</button>`;
+                                }
                                 levelDiv.innerHTML = `
                                     <p>${quizSettings[type].difficulties[level].name}:</p>
                                     <div class="flex justify-between items-center text-md ml-4"><span>💎 Diamantes:</span><span class="font-bold text-xl">${levelGems.diamonds}</span></div>
-                                    <div class="flex justify-between items-center text-md ml-4"><span>🔴 Rubíes:</span><span class="font-bold text-xl">${levelGems.rubies}</span></div>
+                                    <div class="flex justify-between items-center text-md ml-4">
+                                        <span>🔴 Rubíes:</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-xl">${levelGems.rubies}</span>
+                                            ${retryButtonHTML}
+                                        </div>
+                                    </div>
                                 `;
                                 typeDiv.appendChild(levelDiv);
                             }
@@ -555,6 +565,17 @@
             if (gemsContainerEl.innerHTML === '') {
                 gemsContainerEl.innerHTML = '<p class="text-center text-gray-500">Aún no has ganado ninguna recompensa. ¡Sigue jugando para conseguirlas!</p>';
             }
+            
+            // Add event listeners to new buttons
+            document.querySelectorAll('.retry-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const type = e.target.dataset.retryType;
+                    const level = e.target.dataset.retryLevel;
+                    currentQuizType = type;
+                    selectDifficulty(level);
+                });
+            });
+
             showScreen('gems');
         }
 
