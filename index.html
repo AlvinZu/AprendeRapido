@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Kids</title>
+    <title>Quiz Educativo</title>
     
     <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -243,7 +243,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v12';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v13';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -437,6 +437,7 @@
         let draggedItem = null;
         let gems = {};
         let stats = {};
+        let englishVoice = null;
 
         // --- Gesture State ---
         let touchStartX = 0;
@@ -534,14 +535,16 @@
                         
                         Object.keys(gems[type]).forEach(level => {
                             const levelGems = gems[type][level];
-                            const levelDiv = document.createElement('div');
-                            levelDiv.className = 'ml-4 text-gray-700';
-                            levelDiv.innerHTML = `
-                                <p>${quizSettings[type].difficulties[level].name}:</p>
-                                <div class="flex justify-between items-center text-md ml-4"><span>💎 Diamantes:</span><span class="font-bold text-xl">${levelGems.diamonds}</span></div>
-                                <div class="flex justify-between items-center text-md ml-4"><span>🔴 Rubíes:</span><span class="font-bold text-xl">${levelGems.rubies}</span></div>
-                            `;
-                            typeDiv.appendChild(levelDiv);
+                            if(levelGems.diamonds > 0 || levelGems.rubies > 0) {
+                                const levelDiv = document.createElement('div');
+                                levelDiv.className = 'ml-4 text-gray-700';
+                                levelDiv.innerHTML = `
+                                    <p>${quizSettings[type].difficulties[level].name}:</p>
+                                    <div class="flex justify-between items-center text-md ml-4"><span>💎 Diamantes:</span><span class="font-bold text-xl">${levelGems.diamonds}</span></div>
+                                    <div class="flex justify-between items-center text-md ml-4"><span>🔴 Rubíes:</span><span class="font-bold text-xl">${levelGems.rubies}</span></div>
+                                `;
+                                typeDiv.appendChild(levelDiv);
+                            }
                         });
                         subjectDiv.appendChild(typeDiv);
                     }
@@ -1052,6 +1055,13 @@
                 feedbackContainer.textContent = '¡Correcto!';
                 feedbackContainer.classList.add('text-green-500');
                 if (selectedButton) selectedButton.classList.add('correct');
+                
+                if (currentQuizType === 'english' && englishVoice) {
+                    const utterance = new SpeechSynthesisUtterance(correctAnswer);
+                    utterance.voice = englishVoice;
+                    utterance.rate = 0.9;
+                    window.speechSynthesis.speak(utterance);
+                }
             } else {
                 feedbackContainer.textContent = selectedButton ? `Incorrecto. La respuesta es ${correctAnswer}` : `¡Tiempo! La respuesta es ${correctAnswer}`;
                 feedbackContainer.classList.add('text-red-500');
@@ -1216,6 +1226,17 @@
             });
         });
 
+        // --- Speech Synthesis Loader ---
+        function loadEnglishVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            englishVoice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en'));
+        }
+        loadEnglishVoice();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadEnglishVoice;
+        }
+
+        // --- Initial Load ---
         initializeUser();
     </script>
 </body>
