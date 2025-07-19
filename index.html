@@ -364,7 +364,11 @@
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
                 const CACHE_NAME = 'math-spanish-quiz-cache-v33';
-                const urlsToCache = ['/'];
+                const urlsToCache = [
+    '/',
+    'https://cdn.tailwindcss.com',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
+];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
                     self.skipWaiting();
