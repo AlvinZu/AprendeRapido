@@ -364,11 +364,7 @@
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
                 const CACHE_NAME = 'math-spanish-quiz-cache-v33';
-                const urlsToCache = [
-    '/',
-    'https://cdn.tailwindcss.com',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
-];
+                const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
                     self.skipWaiting();
@@ -703,7 +699,7 @@
             pronouns: {
                 name: 'Pronombres Personales',
                 instructionTitle: '¿Qué son los Pronombres?',
-                instructionText: 'Los pronombres son palabras que reemplazan a los nombres de personas o cosas para no repetirlos.<br><br><b>I</b> (Yo) <br><b>You</b> (Tú/Ustedes) <br><b>He</b> (Él) <br><b>She</b> (Ella) <br><b>It</b> (Eso - para cosas o animales) <br><b>We</b> (Nosotros/as) <br><b>They</b> (Ellos/as)',
+                instructionText: 'Los pronombres se combinan con el verbo "to be" (ser/estar) de la siguiente manera:<br><br><b>I am</b> (Yo soy/estoy)<br><b>You are</b> (Tú eres/estás)<br><b>He is</b> (Él es/está)<br><b>She is</b> (Ella es/está)<br><b>It is</b> (Eso es/está)<br><b>We are</b> (Nosotros/as somos/estamos)<br><b>They are</b> (Ellos/as son/están)',
                 data: pronounData,
                 timeLimit: 15
             },
@@ -969,6 +965,7 @@
                 difficultySettings = null; 
                 startSession();
             } else if (currentQuizType === 'pronouns') {
+                difficultySettings = null; // Pronouns don't have difficulty levels
                 showInstructionScreen();
             }
             else {
@@ -1804,7 +1801,7 @@
 
             if (totalScore === totalPossibleScore && difficultySettings) {
                 awardGem(mainType, difficultySettings.key, 'diamonds');
-                finalTitleEl.textContent = `¡PERFECTO, ${userName}! �`;
+                finalTitleEl.textContent = `¡PERFECTO, ${userName}! 💎`;
                 finalMotivationEl.textContent = "¡Has ganado un Diamante por tu increíble desempeño!";
             } else if (percentage >= 0.8 && difficultySettings) {
                 awardGem(mainType, difficultySettings.key, 'rubies');
