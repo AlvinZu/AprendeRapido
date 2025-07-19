@@ -178,6 +178,7 @@
             <p class="text-gray-600 mb-8">Elige un tipo de ejercicio.</p>
             <div class="space-y-4">
                  <button data-quiz-type="reading" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Lectura de Comprensión</button>
+                 <button data-quiz-type="spelling" class="w-full bg-gradient-to-br from-rose-500 to-red-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">✍️ Desafío de Ortografía</button>
             </div>
             <button id="back-to-main-menu-btn-2" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
@@ -583,6 +584,33 @@
             { q: "My parents are doctors. ___ work at the hospital.", a: "They", o: ["We", "You", "I"] },
             { q: "My sister is a great singer. ___ sings beautifully.", a: "She", o: ["He", "It", "We"] }
         ];
+
+        const ortografiaData = [
+            { q: "¿Cuál está bien escrita?", a: "Vaca", o: ["Baca"] }, { q: "¿Cuál está bien escrita?", a: "Había", o: ["Abía"] },
+            { q: "¿Cuál está bien escrita?", a: "Tubo", o: ["Tuvo"] }, { q: "¿Cuál está bien escrita?", a: "Hola", o: ["Ola"] },
+            { q: "¿Cuál está bien escrita?", a: "Hacer", o: ["Aser"] }, { q: "¿Cuál está bien escrita?", a: "Zapato", o: ["Sapato"] },
+            { q: "¿Cuál está bien escrita?", a: "Gente", o: ["Jente"] }, { q: "¿Cuál está bien escrita?", a: "Lluvia", o: ["Yuvia"] },
+            { q: "¿Cuál está bien escrita?", a: "Avión", o: ["Abión"] }, { q: "¿Cuál está bien escrita?", a: "Canción", o: ["Cansión"] },
+            { q: "¿Cuál está bien escrita?", a: "Siempre", o: ["Ciempre"] }, { q: "¿Cuál está bien escrita?", a: "Huevo", o: ["Guevo"] },
+            { q: "¿Cuál está bien escrita?", a: "Verano", o: ["Berano"] }, { q: "¿Cuál está bien escrita?", a: "Invierno", o: ["Imbierno"] },
+            { q: "¿Cuál está bien escrita?", a: "Brazo", o: ["Braso"] }, { q: "¿Cuál está bien escrita?", a: "Examen", o: ["Ecsamen"] },
+            { q: "¿Cuál está bien escrita?", a: "Feliz", o: ["Felis"] }, { q: "¿Cuál está bien escrita?", a: "Jirafa", o: ["Girafa"] },
+            { q: "¿Cuál está bien escrita?", a: "Bicicleta", o: ["Vicleta"] }, { q: "¿Cuál está bien escrita?", a: "Hermoso", o: ["Ermoso"] },
+            { q: "¿Cuál está bien escrita?", a: "Caballo", o: ["Cavallo"] }, { q: "¿Cuál está bien escrita?", a: "Guitarra", o: ["Gitarra"] },
+            { q: "¿Cuál está bien escrita?", a: "Océano", o: ["Oceano"] }, { q: "¿Cuál está bien escrita?", a: "Árbol", o: ["Arbol"] },
+            { q: "¿Cuál está bien escrita?", a: "Corazón", o: ["Corazon"] }, { q: "¿Cuál está bien escrita?", a: "Maíz", o: ["Mais"] },
+            { q: "¿Cuál está bien escrita?", a: "Azúcar", o: ["Asucar"] }, { q: "¿Cuál está bien escrita?", a: "Lápiz", o: ["Lapis"] },
+            { q: "¿Cuál está bien escrita?", a: "Fútbol", o: ["Futbol"] }, { q: "¿Cuál está bien escrita?", a: "Difícil", o: ["Dificil"] },
+            { q: "¿Cuál está bien escrita?", a: "Fácil", o: ["Facil"] }, { q: "¿Cuál está bien escrita?", a: "Música", o: ["Musica"] },
+            { q: "¿Cuál está bien escrita?", a: "Pájaro", o: ["Pajaro"] }, { q: "¿Cuál está bien escrita?", a: "Ratón", o: ["Raton"] },
+            { q: "¿Cuál está bien escrita?", a: "Inglés", o: ["Ingles"] }, { q: "¿Cuál está bien escrita?", a: "Francés", o: ["Frances"] },
+            { q: "¿Cuál está bien escrita?", a: "Japonés", o: ["Japones"] }, { q: "¿Cuál está bien escrita?", a: "Adiós", o: ["Adios"] },
+            { q: "¿Cuál está bien escrita?", a: "Después", o: ["Despues"] }, { q: "¿Cuál está bien escrita?", a: "También", o: ["Tambien"] },
+            { q: "¿Cuál está bien escrita?", a: "Jamás", o: ["Jamas"] }, { q: "¿Cuál está bien escrita?", a: "Además", o: ["Ademas"] },
+            { q: "¿Cuál está bien escrita?", a: "Quizás", o: ["Quisas"] }, { q: "¿Cuál está bien escrita?", a: "Allí", o: ["Alli"] },
+            { q: "¿Cuál está bien escrita?", a: "Así", o: ["Asi"] }, { q: "¿Cuál está bien escrita?", a: "País", o: ["Pais"] },
+            { q: "¿Cuál está bien escrita?", a: "Día", o: ["Dia"] }, { q: "¿Cuál está bien escrita?", a: "Raíz", o: ["Raiz"] }
+        ];
       
         const readingData = [
             {
@@ -701,6 +729,11 @@
                 instructionTitle: '¿Qué son los Pronombres?',
                 instructionText: 'Los pronombres se combinan con el verbo "to be" (ser/estar) de la siguiente manera:<br><br><b>I am</b> (Yo soy/estoy)<br><b>You are</b> (Tú eres/estás)<br><b>He is</b> (Él es/está)<br><b>She is</b> (Ella es/está)<br><b>It is</b> (Eso es/está)<br><b>We are</b> (Nosotros/as somos/estamos)<br><b>They are</b> (Ellos/as son/están)',
                 data: pronounData,
+                timeLimit: 15
+            },
+            spelling: {
+                name: 'Desafío de Ortografía',
+                data: ortografiaData,
                 timeLimit: 15
             },
             reading: { name: 'Lectura de Comprensión' }
@@ -822,7 +855,7 @@
             gemsContainerEl.innerHTML = '';
             const subjects = {
                 'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division', 'connect'],
-                'Español': ['reading'],
+                'Español': ['reading', 'spelling'],
                 'Inglés': ['english', 'grammar', 'pronouns']
             };
 
@@ -961,7 +994,7 @@
         
         function selectQuizType(type) {
             currentQuizType = type;
-            if (currentQuizType === 'reading') {
+            if (currentQuizType === 'reading' || currentQuizType === 'spelling') {
                 difficultySettings = null; 
                 startSession();
             } else if (currentQuizType === 'pronouns') {
@@ -1032,8 +1065,8 @@
                  mainType = 'english';
             }
 
-            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns') {
-                TOTAL_ROUNDS = 1; // Pronouns and Grammar are single rounds for now
+            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling') {
+                TOTAL_ROUNDS = 3; 
                 QUESTIONS_PER_ROUND = 10;
             } else if (mainType === 'reading') {
                 sessionContent = [...readingData].sort(() => Math.random() - 0.5);
@@ -1158,18 +1191,13 @@
 
             if (mainType === 'english') {
                 const data = quizSettings.english.categories[currentQuizCategory].data;
-                const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
-                const endIndex = startIndex + QUESTIONS_PER_ROUND;
-
                 if (sessionContent.length === 0) {
                     let allWords = Object.keys(data);
                     const totalQuestionsNeeded = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
 
                     if (allWords.length > 0 && allWords.length < totalQuestionsNeeded) {
                         const tempWords = [];
-                        while (tempWords.length < totalQuestionsNeeded) {
-                            tempWords.push(...allWords); 
-                        }
+                        while (tempWords.length < totalQuestionsNeeded) { tempWords.push(...allWords); }
                         allWords = tempWords.slice(0, totalQuestionsNeeded);
                     }
                     
@@ -1180,6 +1208,8 @@
                     sessionContent = allWords;
                 }
 
+                const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
+                const endIndex = startIndex + QUESTIONS_PER_ROUND;
                 const roundWords = sessionContent.slice(startIndex, endIndex);
 
                 questions = roundWords.map(word => ({
@@ -1187,30 +1217,36 @@
                     answer: data[word]
                 }));
 
-            } else if (mainType === 'grammar') {
-                const data = difficultySettings.data;
+            } else if (mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling') {
+                const data = mainType === 'grammar' ? difficultySettings.data : quizSettings[mainType].data;
+                if (sessionContent.length === 0) {
+                    let allQuestionsData = [...data];
+                    const totalQuestionsNeeded = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
+                    if (allQuestionsData.length > 0 && allQuestionsData.length < totalQuestionsNeeded) {
+                        const temp = [];
+                        while (temp.length < totalQuestionsNeeded) { temp.push(...allQuestionsData); }
+                        allQuestionsData = temp.slice(0, totalQuestionsNeeded);
+                    }
+                    for (let i = allQuestionsData.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [allQuestionsData[i], allQuestionsData[j]] = [allQuestionsData[j], allQuestionsData[i]];
+                    }
+                    sessionContent = allQuestionsData;
+                }
+                
                 const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
                 const endIndex = startIndex + QUESTIONS_PER_ROUND;
-                if (sessionContent.length === 0) {
-                    let allSentences = [...data];
-                    for (let i = allSentences.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [allSentences[i], allSentences[j]] = [allSentences[j], allSentences[i]];
-                    }
-                    sessionContent = allSentences;
+                const roundQuestionsData = sessionContent.slice(startIndex, endIndex);
+                
+                if (mainType === 'grammar') {
+                    questions = roundQuestionsData;
+                } else {
+                    questions = roundQuestionsData.map(q => ({
+                        text: q.q,
+                        answer: q.a,
+                        options: [...q.o, q.a].sort(() => Math.random() - 0.5)
+                    }));
                 }
-                questions = sessionContent.slice(0, QUESTIONS_PER_ROUND * TOTAL_ROUNDS);
-            } else if (mainType === 'pronouns') {
-                let allPronounQuestions = [...quizSettings.pronouns.data];
-                 for (let i = allPronounQuestions.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [allPronounQuestions[i], allPronounQuestions[j]] = [allPronounQuestions[j], allPronounQuestions[i]];
-                }
-                questions = allPronounQuestions.map(q => ({
-                    text: q.q.replace('___', '___'),
-                    answer: q.a,
-                    options: [...q.o, q.a].sort(() => Math.random() - 0.5)
-                }));
             } else if (mainType === 'reading') {
                 const reading = sessionContent[currentRound - 1];
                 questions = reading.questions.map(q => ({
@@ -1562,7 +1598,7 @@
                     const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
                     options.add(randomAnswer);
                 }
-            } else if (mainType === 'reading' || mainType === 'pronouns') {
+            } else if (mainType === 'reading' || mainType === 'pronouns' || mainType === 'spelling') {
                 while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
                     const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
                     options.add(randomOption);
@@ -1888,7 +1924,7 @@
         });
 
         backToMainMenuBtn.addEventListener('click', () => showScreen('mainMenu'));
-        backToMainMenuBtn2.addEventListener('click', () => showScreen('mainMenu'));
+        backToMainMenuBtn2.addEventListener('click', () => showScreen('spanishType'));
 
         nextRoundBtn.addEventListener('click', () => {
             currentRound++;
@@ -1911,7 +1947,7 @@
             }
             if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns') {
                 showScreen('englishType'); 
-            } else if (['reading'].includes(mainType)) {
+            } else if (['reading', 'spelling'].includes(mainType)) {
                 showScreen('spanishType');
             } else {
                 showScreen('mathType');
