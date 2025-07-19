@@ -76,6 +76,24 @@
         .drop-target {
             transition: background-color 0.2s;
         }
+        /* Connect Game Styles */
+        #connect-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicking through the canvas */
+        }
+        .connect-item {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .connect-item.selected {
+            border-color: #3b82f6; /* blue-500 */
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
@@ -141,6 +159,7 @@
                  <button data-quiz-type="addition" class="w-full bg-gradient-to-br from-blue-500 to-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Sumas</button>
                  <button data-quiz-type="subtraction" class="w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Restas</button>
                  <button data-quiz-type="division" class="w-full bg-gradient-to-br from-red-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Divisiones</button>
+                 <button data-quiz-type="connect" class="w-full bg-gradient-to-br from-lime-500 to-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Conectar Operaciones</button>
             </div>
             <button id="back-to-main-menu-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
@@ -194,6 +213,27 @@
             </div>
         </div>
         
+        <!-- Connect Game Screen -->
+        <div id="connect-game-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+                <button id="back-from-connect-game-btn" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Salir</button>
+                <span id="connect-game-counter" class="text-gray-600 font-semibold"></span>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Conecta la Operación</h2>
+            <div class="relative">
+                <canvas id="connect-canvas" class="z-0"></canvas>
+                <div id="connect-container" class="relative z-10 flex justify-between">
+                    <div id="operations-column" class="w-1/2 space-y-4 flex flex-col items-center"></div>
+                    <div id="results-column" class="w-1/2 space-y-4 flex flex-col items-center"></div>
+                </div>
+            </div>
+            <div id="connect-game-feedback" class="h-8 text-xl font-bold my-4"></div>
+            <div class="flex gap-4">
+                <button id="clear-lines-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">Limpiar</button>
+                <button id="check-connections-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl">Revisar</button>
+            </div>
+        </div>
+
         <!-- Round Transition Screen -->
         <div id="round-transition-screen" class="hidden">
             <h2 id="round-end-title" class="text-3xl font-bold text-gray-800 mb-2"></h2>
@@ -245,7 +285,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v26';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v29';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -276,6 +316,7 @@
             difficulty: document.getElementById('difficulty-screen'),
             divisionVisual: document.getElementById('division-visual-screen'),
             reading: document.getElementById('reading-screen'),
+            connectGame: document.getElementById('connect-game-screen'),
             quiz: document.getElementById('quiz-screen'),
             roundTransition: document.getElementById('round-transition-screen'),
             end: document.getElementById('end-screen')
@@ -303,6 +344,7 @@
         const backFromReadingBtn = document.getElementById('back-from-reading-btn');
         const backFromQuizBtn = document.getElementById('back-from-quiz-btn');
         const backFromDivisionGameBtn = document.getElementById('back-from-division-game-btn');
+        const backFromConnectGameBtn = document.getElementById('back-from-connect-game-btn');
         const readingTitleEl = document.getElementById('reading-title');
         const readingTextContainerEl = document.getElementById('reading-text-container');
         const readingTimerEl = document.getElementById('reading-timer');
@@ -330,6 +372,14 @@
         const dropTargetsContainerEl = document.getElementById('drop-targets-container');
         const divisionGameFeedbackEl = document.getElementById('division-game-feedback');
         const checkDivisionBtn = document.getElementById('check-division-btn');
+        const connectCanvas = document.getElementById('connect-canvas');
+        const connectContainer = document.getElementById('connect-container');
+        const operationsColumn = document.getElementById('operations-column');
+        const resultsColumn = document.getElementById('results-column');
+        const checkConnectionsBtn = document.getElementById('check-connections-btn');
+        const clearLinesBtn = document.getElementById('clear-lines-btn');
+        const connectGameCounterEl = document.getElementById('connect-game-counter');
+        const connectGameFeedbackEl = document.getElementById('connect-game-feedback');
 
         // --- Content Data ---
         const englishData = {
@@ -415,6 +465,7 @@
             addition: { name: 'Sumas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [100, 999], timeLimit: 10, optionLogic: 'close' }}},
             subtraction: { name: 'Restas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [50, 200], timeLimit: 8, optionLogic: 'close' }}},
             division: { name: 'Divisiones', difficulties: { easy: { name: 'Fácil (Visual)' }, normal: { name: 'Normal (Inversa de x)', timeLimit: 15 }, hard: { name: 'Difícil (con Resto)', timeLimit: 20 }}},
+            connect: { name: 'Conectar Operaciones', difficulties: { easy: { name: 'Fácil (Sumas)' }, normal: { name: 'Normal (Multiplicación)' }, hard: { name: 'Difícil (Mixto)' }}},
             english: { name: 'Inglés', difficulties: { easy: { name: 'Fácil (Colores)', timeLimit: 15, optionLogic: 'plausible', data: englishData.colors }, normal: { name: 'Normal (Animales)', timeLimit: 12, optionLogic: 'plausible', data: englishData.animals }, hard: { name: 'Difícil (Verbos)', timeLimit: 10, optionLogic: 'close', data: englishData.verbs }}},
             reading: { name: 'Lectura de Comprensión' }
         };
@@ -439,6 +490,10 @@
         let selectedItem = null;
         let gems = {};
         let stats = {};
+        let connectGameData = {
+            selected: null,
+            connections: []
+        };
 
         // --- Gesture State ---
         let touchStartX = 0;
@@ -517,7 +572,7 @@
         function showGemsScreen() {
             gemsContainerEl.innerHTML = '';
             const subjects = {
-                'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division'],
+                'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division', 'connect'],
                 'Español': ['reading'],
                 'Inglés': ['english']
             };
@@ -696,6 +751,9 @@
             } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
                 TOTAL_ROUNDS = 3;
                 QUESTIONS_PER_ROUND = 5; 
+            } else if (currentQuizType === 'connect') {
+                TOTAL_ROUNDS = 3;
+                QUESTIONS_PER_ROUND = 1; // Each "question" is a full board of 5 connections
             }
              else {
                 TOTAL_ROUNDS = 3;
@@ -713,6 +771,8 @@
                 setupReadingScreen();
             } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
                 showNextDivisionGame();
+            } else if (currentQuizType === 'connect') {
+                showNextConnectGame();
             }
             else {
                 showScreen('quiz');
@@ -814,6 +874,12 @@
                 for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
                     questions.push(generateDivisionQuestion());
                 }
+            } else if (currentQuizType === 'connect') {
+                const operations = [];
+                for (let i = 0; i < 5; i++) {
+                    operations.push(generateConnectQuestion());
+                }
+                questions = [operations]; // One "question" which is an array of 5 operations
             }
              else {
                 for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
@@ -838,7 +904,7 @@
                 if (currentQuizType === 'subtraction' && num1 < num2) [num1, num2] = [num2, num1];
                 answer = currentQuizType === 'addition' ? num1 + num2 : num1 - num2;
             }
-            text = `${num1} ${operator} ${num2} = ?`;
+            text = `${num1} ${operator} ${num2}`;
             return { text, answer };
         }
         
@@ -855,6 +921,37 @@
                 const dividend = divisor * quotient + remainder;
                 return { text: `${dividend} ÷ ${divisor} = ?`, answer: `${quotient} sobra ${remainder}` };
             }
+        }
+
+        function generateConnectQuestion() {
+            let num1, num2, answer, text, operator;
+            const type = difficultySettings.key; // easy, normal, hard
+            
+            if (type === 'easy') { // Sums
+                operator = '+';
+                num1 = getRandomNumber(1, 20);
+                num2 = getRandomNumber(1, 20);
+                answer = num1 + num2;
+            } else if (type === 'normal') { // Multiplication
+                operator = '×';
+                num1 = getRandomNumber(2, 9);
+                num2 = getRandomNumber(2, 9);
+                answer = num1 * num2;
+            } else { // Mixed
+                if (Math.random() > 0.5) {
+                    operator = '+';
+                    num1 = getRandomNumber(10, 50);
+                    num2 = getRandomNumber(10, 50);
+                    answer = num1 + num2;
+                } else {
+                    operator = '×';
+                    num1 = getRandomNumber(2, 12);
+                    num2 = getRandomNumber(2, 12);
+                    answer = num1 * num2;
+                }
+            }
+            text = `${num1} ${operator} ${num2}`;
+            return { text, answer };
         }
         
         function showNextDivisionGame() {
@@ -937,6 +1034,108 @@
                     divisionGameFeedbackEl.classList.remove('text-green-500');
                 }
             };
+        }
+
+        function showNextConnectGame() {
+            if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
+                setupConnectGame();
+                showScreen('connectGame');
+            } else {
+                handleRoundEnd();
+            }
+        }
+
+        function setupConnectGame() {
+            connectGameCounterEl.textContent = `Ronda ${currentRound} | Juego ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
+            connectGameData.connections = [];
+            connectGameData.selected = null;
+            connectGameFeedbackEl.textContent = '';
+            
+            const operations = questions[currentQuestionIndex];
+            const results = operations.map(q => q.answer).sort(() => Math.random() - 0.5);
+
+            operationsColumn.innerHTML = '';
+            resultsColumn.innerHTML = '';
+
+            operations.forEach((q, i) => {
+                const opDiv = document.createElement('div');
+                opDiv.className = 'connect-item bg-gray-100 p-4 rounded-lg shadow-md w-3/4';
+                opDiv.textContent = q.text;
+                opDiv.dataset.id = q.answer;
+                opDiv.dataset.type = 'op';
+                operationsColumn.appendChild(opDiv);
+            });
+
+            results.forEach((r, i) => {
+                const resDiv = document.createElement('div');
+                resDiv.className = 'connect-item bg-gray-100 p-4 rounded-lg shadow-md w-3/4';
+                resDiv.textContent = r;
+                resDiv.dataset.id = r;
+                resDiv.dataset.type = 'res';
+                resultsColumn.appendChild(resDiv);
+            });
+            
+            setTimeout(() => {
+                drawConnections();
+                document.querySelectorAll('.connect-item').forEach(item => {
+                    item.addEventListener('click', handleConnectItemClick);
+                });
+            }, 100);
+        }
+
+        function handleConnectItemClick(e) {
+            const clickedItem = e.target;
+            if (!connectGameData.selected) {
+                if (clickedItem.parentElement.id === 'operations-column') {
+                    connectGameData.selected = clickedItem;
+                    clickedItem.classList.add('selected');
+                }
+            } else {
+                if (clickedItem.parentElement.id === 'results-column') {
+                    const isAlreadyConnected = connectGameData.connections.some(conn => conn.res === clickedItem);
+                    if (!isAlreadyConnected) {
+                        connectGameData.connections.push({ op: connectGameData.selected, res: clickedItem });
+                        connectGameData.selected.classList.remove('selected');
+                        connectGameData.selected = null;
+                        drawConnections();
+                    }
+                } else { 
+                    connectGameData.selected.classList.remove('selected');
+                    connectGameData.selected = clickedItem;
+                    clickedItem.classList.add('selected');
+                }
+            }
+        }
+        
+        function drawConnections(feedback = false) {
+            const ctx = connectCanvas.getContext('2d');
+            const rect = connectContainer.getBoundingClientRect();
+            connectCanvas.width = rect.width;
+            connectCanvas.height = rect.height;
+            ctx.clearRect(0, 0, connectCanvas.width, connectCanvas.height);
+
+            connectGameData.connections.forEach(conn => {
+                const opRect = conn.op.getBoundingClientRect();
+                const resRect = conn.res.getBoundingClientRect();
+
+                const startX = opRect.right - rect.left;
+                const startY = opRect.top + opRect.height / 2 - rect.top;
+                const endX = resRect.left - rect.left;
+                const endY = resRect.top + resRect.height / 2 - rect.top;
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(endX, endY);
+                
+                if (feedback) {
+                    ctx.strokeStyle = conn.op.dataset.id == conn.res.dataset.id ? '#22c55e' : '#ef4444';
+                    ctx.lineWidth = 4;
+                } else {
+                    ctx.strokeStyle = '#60a5fa'; // blue-400
+                    ctx.lineWidth = 3;
+                }
+                ctx.stroke();
+            });
         }
 
         function showNextQuestion() {
@@ -1118,7 +1317,7 @@
         
         function showFinalScore() {
             showScreen('end');
-            const totalPossibleScore = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
+            const totalPossibleScore = (currentQuizType === 'connect' ? 5 : QUESTIONS_PER_ROUND) * TOTAL_ROUNDS;
             updateStats(currentQuizType, totalScore, totalPossibleScore);
             const percentage = totalScore / totalPossibleScore;
 
@@ -1141,20 +1340,6 @@
 
             finalScoreEl.textContent = `Tu puntaje total: ${totalScore} de ${totalPossibleScore}.`;
             summaryTextEl.textContent = `${quizSettings[currentQuizType].name}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
-        }
-        
-        function handleSwipe(currentScreen) {
-            if (touchStartX < 50 && touchEndX > touchStartX + 100) {
-                if (currentScreen === 'difficulty') {
-                    if (currentQuizType === 'english') {
-                        showScreen('mainMenu');
-                    } else {
-                        showScreen('mathType');
-                    }
-                } else if (currentScreen === 'mathType' || currentScreen === 'spanishType') {
-                    showScreen('mainMenu');
-                }
-            }
         }
         
         // --- Event Listeners ---
@@ -1190,7 +1375,7 @@
         });
 
         backBtn.addEventListener('click', () => {
-            if (['english'].includes(currentQuizType)) {
+            if (['english', 'connect'].includes(currentQuizType)) {
                 showScreen('mainMenu');
             } else if (['reading'].includes(currentQuizType)) {
                 showScreen('spanishType');
@@ -1205,6 +1390,11 @@
         });
         
         backFromDivisionGameBtn.addEventListener('click', () => {
+            resetState();
+            showScreen('difficulty');
+        });
+
+        backFromConnectGameBtn.addEventListener('click', () => {
             resetState();
             showScreen('difficulty');
         });
@@ -1225,20 +1415,41 @@
             }
         });
 
+        clearLinesBtn.addEventListener('click', () => {
+            connectGameData.connections = [];
+            drawConnections();
+        });
+
+        checkConnectionsBtn.addEventListener('click', () => {
+            let correctCount = 0;
+            connectGameData.connections.forEach(conn => {
+                if (conn.op.dataset.id == conn.res.dataset.id) {
+                    correctCount++;
+                }
+            });
+            drawConnections(true); // Draw with feedback colors
+            
+            document.querySelectorAll('.connect-item').forEach(item => item.removeEventListener('click', handleConnectItemClick));
+            
+            score = correctCount;
+            
+            if (correctCount === 5) { // 5 is the number of pairs
+                connectGameFeedbackEl.textContent = '¡Todas correctas!';
+                connectGameFeedbackEl.classList.add('text-green-500');
+                connectGameFeedbackEl.classList.remove('text-red-500');
+            } else {
+                connectGameFeedbackEl.textContent = `Tienes ${correctCount} de 5 correctas.`;
+                connectGameFeedbackEl.classList.add('text-red-500');
+                connectGameFeedbackEl.classList.remove('text-green-500');
+            }
+            
+            currentQuestionIndex++;
+            setTimeout(showNextConnectGame, 2500);
+        });
+
         restartBtn.addEventListener('click', () => {
             welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
             showScreen('mainMenu');
-        });
-
-        ['difficulty', 'mathType', 'spanishType'].forEach(screenId => {
-            screens[screenId].addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, { passive: true });
-
-            screens[screenId].addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe(screenId);
-            });
         });
 
         // --- Initial Load ---
