@@ -42,7 +42,7 @@
             color: white !important;
         }
         .btn-answer:disabled { opacity: 0.8; }
-        #timer-progress {
+        #timer-progress, #grammar-timer-progress {
             stroke-dasharray: 283;
             stroke-dashoffset: 0;
             transform: rotate(-90deg);
@@ -93,6 +93,13 @@
         .connect-item.selected {
             border-color: #3b82f6; /* blue-500 */
             transform: scale(1.05);
+        }
+        .flashcard-answer {
+            animation: reveal 0.5s ease-in-out forwards;
+        }
+        @keyframes reveal {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -160,6 +167,7 @@
                  <button data-quiz-type="subtraction" class="w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Restas</button>
                  <button data-quiz-type="division" class="w-full bg-gradient-to-br from-red-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Divisiones</button>
                  <button data-quiz-type="connect" class="w-full bg-gradient-to-br from-lime-500 to-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Conectar Operaciones</button>
+                 <button id="review-tables-btn" class="w-full bg-gradient-to-br from-rose-500 to-fuchsia-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 mt-2">Repasar Tablas de Multiplicar</button>
             </div>
             <button id="back-to-main-menu-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
@@ -185,6 +193,29 @@
         <button id="back-to-main-menu-from-english-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
     </div>
       
+        <!-- Table Selection Screen -->
+        <div id="table-selection-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">Repasar Tablas</h1>
+            <p class="text-gray-600 mb-8">¿Qué tabla quieres repasar hoy?</p>
+            <div id="table-buttons-container" class="grid grid-cols-4 gap-4">
+                 <!-- Table buttons will be added dynamically -->
+            </div>
+             <button id="back-to-math-menu-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver a Matemáticas</button>
+        </div>
+
+        <!-- Table Review Screen -->
+        <div id="table-review-screen" class="hidden">
+            <h1 id="table-review-title" class="text-3xl sm:text-4xl font-bold text-gray-700 mb-6"></h1>
+            <div id="flashcard-container" class="bg-indigo-500 text-white rounded-xl shadow-2xl p-8 min-h-[150px] flex items-center justify-center text-5xl font-bold mb-6">
+                <!-- Flashcard content goes here -->
+            </div>
+            <div id="review-controls" class="flex justify-between items-center gap-4">
+                <button id="prev-fact-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">Anterior</button>
+                <button id="next-fact-btn" class="w-full bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-300 transition-all duration-300">Siguiente</button>
+            </div>
+            <button id="exit-review-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver a la selección de tablas</button>
+        </div>
+
 
         <!-- Difficulty Screen -->
         <div id="difficulty-screen" class="hidden">
@@ -195,6 +226,14 @@
             </div>
              <button id="back-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver</button>
         </div>
+
+        <!-- Instruction Screen -->
+        <div id="instruction-screen" class="hidden">
+            <h1 id="instruction-title" class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4"></h1>
+            <div id="instruction-text" class="text-left text-lg text-gray-700 bg-gray-50 p-4 rounded-lg mb-6 space-y-2"></div>
+            <button id="start-from-instruction-btn" class="w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">¡Entendido!</button>
+        </div>
+
 
         <!-- Division Visual Game Screen -->
         <div id="division-visual-screen" class="hidden">
@@ -281,6 +320,33 @@
             <div id="feedback-container" class="mt-6 h-8 text-xl font-bold"></div>
         </div>
 
+        <!-- Grammar Screen -->
+        <div id="grammar-screen" class="hidden">
+            <div class="flex justify-between items-center mb-4 text-gray-600 font-semibold">
+                <button id="back-from-grammar-btn" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">← Salir</button>
+                <span id="grammar-question-counter"></span>
+                <button id="grammar-hint-btn" class="text-sm bg-yellow-300 text-yellow-800 font-semibold py-1 px-3 rounded-full hover:bg-yellow-400 transition-colors">💡 Pista</button>
+                <span id="grammar-score">Puntaje: 0</span>
+            </div>
+             <div id="grammar-hint-display" class="hidden text-sm text-left text-gray-700 bg-yellow-100 p-3 rounded-lg mb-4"></div>
+             <div id="grammar-timer-container" class="relative w-24 h-24 mx-auto mb-4">
+                <svg class="w-full h-full" viewBox="0 0 100 100">
+                    <circle class="text-gray-200" stroke-width="10" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                    <circle id="grammar-timer-progress" class="text-indigo-600" stroke-width="10" stroke-linecap="round" stroke="currentColor" fill="transparent" r="45" cx="50" cy="50" />
+                </svg>
+                <span id="grammar-timer-text" class="absolute top-0 left-0 w-full h-full flex items-center justify-center text-3xl font-bold text-gray-800"></span>
+            </div>
+            <div id="grammar-question-container" class="mb-6">
+                <p id="grammar-question-text" class="text-2xl sm:text-3xl text-gray-800 leading-relaxed"></p>
+            </div>
+            <div id="grammar-answer-container" class="mb-6">
+                <input type="text" id="grammar-input" autocomplete="off" autocorrect="off" spellcheck="false" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            </div>
+            <button id="check-grammar-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Revisar</button>
+            <div id="grammar-feedback-container" class="mt-6 h-8 text-xl font-bold"></div>
+        </div>
+
+
         <!-- End Screen -->
         <div id="end-screen" class="hidden">
             <h2 id="final-title" class="text-3xl font-bold text-gray-800 mb-2"></h2>
@@ -297,7 +363,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v30';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v33';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -326,11 +392,15 @@
             mathType: document.getElementById('math-type-screen'),
             spanishType: document.getElementById('spanish-type-screen'),
             englishType: document.getElementById('english-type-screen'),
+            tableSelection: document.getElementById('table-selection-screen'),
+            tableReview: document.getElementById('table-review-screen'),
             difficulty: document.getElementById('difficulty-screen'),
+            instruction: document.getElementById('instruction-screen'),
             divisionVisual: document.getElementById('division-visual-screen'),
             reading: document.getElementById('reading-screen'),
             connectGame: document.getElementById('connect-game-screen'),
             quiz: document.getElementById('quiz-screen'),
+            grammar: document.getElementById('grammar-screen'),
             roundTransition: document.getElementById('round-transition-screen'),
             end: document.getElementById('end-screen')
         };
@@ -367,19 +437,51 @@
         const nextRoundBtn = document.getElementById('next-round-btn');
         const exitSessionBtn = document.getElementById('exit-session-btn');
         const restartBtn = document.getElementById('restart-btn');
+        
+        // Instruction Screen Elements
+        const instructionTitleEl = document.getElementById('instruction-title');
+        const instructionTextEl = document.getElementById('instruction-text');
+        const startFromInstructionBtn = document.getElementById('start-from-instruction-btn');
+
+        // Quiz Screen Elements
         const questionCounterEl = document.getElementById('question-counter');
         const scoreEl = document.getElementById('score');
         const questionTextEl = document.getElementById('question-text');
         const answersContainer = document.getElementById('answers-container');
         const feedbackContainer = document.getElementById('feedback-container');
+        const timerProgress = document.getElementById('timer-progress');
+        const timerText = document.getElementById('timer-text');
+
+        // Grammar Screen Elements
+        const backFromGrammarBtn = document.getElementById('back-from-grammar-btn');
+        const grammarQuestionCounterEl = document.getElementById('grammar-question-counter');
+        const grammarScoreEl = document.getElementById('grammar-score');
+        const grammarHintBtn = document.getElementById('grammar-hint-btn');
+        const grammarHintDisplay = document.getElementById('grammar-hint-display');
+        const grammarQuestionTextEl = document.getElementById('grammar-question-text');
+        const grammarInputEl = document.getElementById('grammar-input');
+        const checkGrammarBtn = document.getElementById('check-grammar-btn');
+        const grammarFeedbackContainer = document.getElementById('grammar-feedback-container');
+        const grammarTimerProgress = document.getElementById('grammar-timer-progress');
+        const grammarTimerText = document.getElementById('grammar-timer-text');
+
+        // Table Review Elements
+        const reviewTablesBtn = document.getElementById('review-tables-btn');
+        const backToMathMenuBtn = document.getElementById('back-to-math-menu-btn');
+        const tableReviewTitleEl = document.getElementById('table-review-title');
+        const flashcardContainerEl = document.getElementById('flashcard-container');
+        const prevFactBtn = document.getElementById('prev-fact-btn');
+        const nextFactBtn = document.getElementById('next-fact-btn');
+        const exitReviewBtn = document.getElementById('exit-review-btn');
+
+
+        // Other elements
         const roundEndTitleEl = document.getElementById('round-end-title');
         const roundScoreEl = document.getElementById('round-score');
         const finalTitleEl = document.getElementById('final-title');
         const finalScoreEl = document.getElementById('final-score');
         const finalMotivationEl = document.getElementById('final-motivation');
         const summaryTextEl = document.getElementById('summary-text');
-        const timerProgress = document.getElementById('timer-progress');
-        const timerText = document.getElementById('timer-text');
         const divisionGameCounterEl = document.getElementById('division-game-counter');
         const divisionGameInstructionEl = document.getElementById('division-game-instruction');
         const itemsSourceContainerEl = document.getElementById('items-source-container');
@@ -407,26 +509,80 @@
         
         // --- Content Data ---
         const englishData = {
-            colors: {
-                'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise', 'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby'
-            },
-            animals: {
-                'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog', 'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly', 'Tortuga': 'Turtle', 'Ardilla': 'Squirrel', 'Ciervo': 'Deer', 'Canguro': 'Kangaroo'
-            },
-            verbs: {
-                'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen', 'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find', 'Sentir': 'Feel', 'Amar': 'Love'
-            },
-            schoolSupplies: {
-                'Lápiz': 'Pencil', 'Cuaderno': 'Notebook', 'Libro': 'Book', 'Mochila': 'Backpack', 'Tijeras': 'Scissors', 'Pegamento': 'Glue', 'Regla': 'Ruler', 'Pizarrón': 'Blackboard', 'Borrador': 'Eraser', 'Pluma': 'Pen', 'Marcador': 'Marker', 'Sacapuntas': 'Pencil sharpener', 'Calculadora': 'Calculator', 'Escritorio': 'Desk', 'Silla': 'Chair', 'Computadora': 'Computer', 'Grapadora': 'Stapler', 'Cinta adhesiva': 'Tape', 'Pintura': 'Paint', 'Pincel': 'Brush', 'Mapa': 'Map', 'Globo terráqueo': 'Globe', 'Diccionario': 'Dictionary', 'Papel': 'Paper', 'Carpeta': 'Folder', 'Crayón': 'Crayon', 'Tiza': 'Chalk', 'Mesa': 'Table', 'Uniforme': 'Uniform', 'Gimnasio': 'Gym'
-            },
-            family: {
-                'Madre': 'Mother', 'Padre': 'Father', 'Hermano': 'Brother', 'Hermana': 'Sister', 'Abuela': 'Grandmother', 'Abuelo': 'Grandfather', 'Tío': 'Uncle', 'Tía': 'Aunt', 'Primo/a': 'Cousin', 'Hijo': 'Son', 'Hija': 'Daughter', 'Bebé': 'Baby', 'Sobrino': 'Nephew', 'Sobrina': 'Niece', 'Nieto': 'Grandson', 'Nieta': 'Granddaughter', 'Esposo': 'Husband', 'Esposa': 'Wife', 'Suegro': 'Father-in-law', 'Suegra': 'Mother-in-law', 'Cuñado': 'Brother-in-law', 'Cuñada': 'Sister-in-law', 'Padrino': 'Godfather', 'Madrina': 'Godmother', 'Gemelo/a': 'Twin', 'Parientes': 'Relatives', 'Amigo/a': 'Friend', 'Padres': 'Parents', 'Hijos (plural)': 'Children', 'Abuelos (plural)': 'Grandparents'
-            },
-            placesInCity: {
-                'Escuela': 'School', 'Parque': 'Park', 'Tienda': 'Store', 'Hospital': 'Hospital', 'Restaurante': 'Restaurant', 'Banco': 'Bank', 'Cine': 'Cinema', 'Biblioteca': 'Library', 'Supermercado': 'Supermarket', 'Estación de policía': 'Police station', 'Estación de bomberos': 'Fire station', 'Aeropuerto': 'Airport', 'Estación de tren': 'Train station', 'Museo': 'Museum', 'Zoológico': 'Zoo', 'Panadería': 'Bakery', 'Farmacia': 'Pharmacy', 'Oficina de correos': 'Post office', 'Hotel': 'Hotel', 'Gimnasio': 'Gym', 'Playa': 'Beach', 'Montaña': 'Mountain', 'Río': 'River', 'Puente': 'Bridge', 'Calle': 'Street', 'Avenida': 'Avenue', 'Plaza': 'Square', 'Iglesia': 'Church', 'Fábrica': 'Factory', 'Estacionamiento': 'Parking lot'
-            }
+            colors: { 'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise', 'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby' },
+            animals: { 'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog', 'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly', 'Tortuga': 'Turtle', 'Ardilla': 'Squirrel', 'Ciervo': 'Deer', 'Canguro': 'Kangaroo' },
+            verbs: { 'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen', 'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find', 'Sentir': 'Feel', 'Amar': 'Love' },
+            schoolSupplies: { 'Lápiz': 'Pencil', 'Cuaderno': 'Notebook', 'Libro': 'Book', 'Mochila': 'Backpack', 'Tijeras': 'Scissors', 'Pegamento': 'Glue', 'Regla': 'Ruler', 'Pizarrón': 'Blackboard', 'Borrador': 'Eraser', 'Pluma': 'Pen', 'Marcador': 'Marker', 'Sacapuntas': 'Pencil sharpener', 'Calculadora': 'Calculator', 'Escritorio': 'Desk', 'Silla': 'Chair', 'Computadora': 'Computer', 'Grapadora': 'Stapler', 'Cinta adhesiva': 'Tape', 'Pintura': 'Paint', 'Pincel': 'Brush', 'Mapa': 'Map', 'Globo terráqueo': 'Globe', 'Diccionario': 'Dictionary', 'Papel': 'Paper', 'Carpeta': 'Folder', 'Crayón': 'Crayon', 'Tiza': 'Chalk', 'Mesa': 'Table', 'Uniforme': 'Uniform', 'Gimnasio': 'Gym' },
+            family: { 'Madre': 'Mother', 'Padre': 'Father', 'Hermano': 'Brother', 'Hermana': 'Sister', 'Abuela': 'Grandmother', 'Abuelo': 'Grandfather', 'Tío': 'Uncle', 'Tía': 'Aunt', 'Primo/a': 'Cousin', 'Hijo': 'Son', 'Hija': 'Daughter', 'Bebé': 'Baby', 'Sobrino': 'Nephew', 'Sobrina': 'Niece', 'Nieto': 'Grandson', 'Nieta': 'Granddaughter', 'Esposo': 'Husband', 'Esposa': 'Wife', 'Suegro': 'Father-in-law', 'Suegra': 'Mother-in-law', 'Cuñado': 'Brother-in-law', 'Cuñada': 'Sister-in-law', 'Padrino': 'Godfather', 'Madrina': 'Godmother', 'Gemelo/a': 'Twin', 'Parientes': 'Relatives', 'Amigo/a': 'Friend', 'Padres': 'Parents', 'Hijos (plural)': 'Children', 'Abuelos (plural)': 'Grandparents' },
+            placesInCity: { 'Escuela': 'School', 'Parque': 'Park', 'Tienda': 'Store', 'Hospital': 'Hospital', 'Restaurante': 'Restaurant', 'Banco': 'Bank', 'Cine': 'Cinema', 'Biblioteca': 'Library', 'Supermercado': 'Supermarket', 'Estación de policía': 'Police station', 'Estación de bomberos': 'Fire station', 'Aeropuerto': 'Airport', 'Estación de tren': 'Train station', 'Museo': 'Museum', 'Zoológico': 'Zoo', 'Panadería': 'Bakery', 'Farmacia': 'Pharmacy', 'Oficina de correos': 'Post office', 'Hotel': 'Hotel', 'Gimnasio': 'Gym', 'Playa': 'Beach', 'Montaña': 'Mountain', 'Río': 'River', 'Puente': 'Bridge', 'Calle': 'Street', 'Avenida': 'Avenue', 'Plaza': 'Square', 'Iglesia': 'Church', 'Fábrica': 'Factory', 'Estacionamiento': 'Parking lot' }
         };
-      
+
+        const grammarData = {
+            easy: [
+                { q: "The apple ___ red.", a: "is", o: "are" }, { q: "The apples ___ red.", a: "are", o: "is" },
+                { q: "I see ___ dog.", a: "a", o: "an" }, { q: "I see ___ elephant.", a: "an", o: "a" },
+                { q: "___ am a student.", a: "I", o: "You" }, { q: "___ are happy.", a: "You", o: "He" },
+                { q: "___ is a teacher.", a: "She", o: "They" }, { q: "___ is a big house.", a: "It", o: "We" },
+                { q: "___ are a team.", a: "We", o: "She" }, { q: "___ are friends.", a: "They", o: "It" },
+                { q: "My name ___ Carlos.", a: "is", o: "are" }, { q: "This ___ an orange.", a: "is", o: "are" },
+                { q: "___ is my brother.", a: "He", o: "She" }, { q: "___ is my sister.", a: "She", o: "He" },
+                { q: "___ like pizza.", a: "I", o: "He" }, { q: "___ have a pet.", a: "We", o: "It" },
+                { q: "The cars ___ blue.", a: "are", o: "is" }, { q: "The house ___ big.", a: "is", o: "are" },
+                { q: "___ is a cat.", a: "It", o: "They" }, { q: "___ are students.", a: "They", o: "She" },
+                { q: "___ is a doctor.", a: "He", o: "I" }, { q: "___ are playing.", a: "We", o: "He" },
+                { q: "I have ___ apple.", a: "an", o: "a" }, { q: "She has ___ book.", a: "a", o: "an" },
+                { q: "The dog ___ black.", a: "is", o: "are" }, { q: "The books ___ new.", a: "are", o: "is" },
+                { q: "___ is from Mexico.", a: "He", o: "We" }, { q: "___ is my mother.", a: "She", o: "They" },
+                { q: "___ are in the park.", a: "We", o: "It" }, { q: "___ is a sunny day.", a: "It", o: "I" }
+            ],
+            normal: [
+                { q: "The cat is ___ the box.", a: "in", o: "on" }, { q: "The book is ___ the table.", a: "on", o: "under" },
+                { q: "The ball is ___ the chair.", a: "under", o: "in" }, { q: "She ___ in the park.", a: "runs", o: "run" },
+                { q: "They ___ soccer.", a: "play", o: "plays" }, { q: "He ___ a book.", a: "reads", o: "read" },
+                { q: "I have two ___.", a: "dogs", o: "dog" }, { q: "She has three ___.", a: "pencils", o: "pencil" },
+                { q: "Look at the ___.", a: "birds", o: "bird" }, { q: "I eat many ___.", a: "apples", o: "apple" },
+                { q: "The pencil is ___ my backpack.", a: "in", o: "on" }, { q: "My birthday is ___ July.", a: "in", o: "on" },
+                { q: "He ___ English.", a: "speaks", o: "speak" }, { q: "My mom ___ delicious food.", a: "cooks", o: "cook" },
+                { q: "We ___ to school by bus.", a: "go", o: "goes" }, { q: "The sun ___ in the east.", a: "rises", o: "rise" },
+                { q: "There are five ___ on the table.", a: "books", o: "book" }, { q: "I see three ___.", a: "cars", o: "car" },
+                { q: "The keys are ___ the door.", a: "on", o: "in" }, { q: "He sleeps ___ his bed.", a: "in", o: "under" },
+                { q: "The cat ___ milk.", a: "drinks", o: "drink" }, { q: "I ___ my homework every day.", a: "do", o: "does" },
+                { q: "She ___ to music.", a: "listens", o: "listen" }, { q: "The baby is ___ the blanket.", a: "under", o: "on" },
+                { q: "My father ___ a car.", a: "drives", o: "drive" }, { q: "The students ___ hard.", a: "study", o: "studies" },
+                { q: "He has many ___.", a: "friends", o: "friend" }, { q: "There are two ___ in the kitchen.", a: "boxes", o: "box" },
+                { q: "The picture is ___ the wall.", a: "on", o: "in" }, { q: "We live ___ a big city.", a: "in", o: "on" }
+            ],
+            hard: [
+                { q: "I like apples ___ bananas.", a: "and", o: "but" }, { q: "I want to go, ___ I am tired.", a: "but", o: "because" },
+                { q: "He is happy ___ it is his birthday.", a: "because", o: "and" }, { q: "Yesterday, I ___ to music.", a: "listened", o: "listen" },
+                { q: "She ___ TV last night.", a: "watched", o: "watches" }, { q: "They ___ a game.", a: "played", o: "play" },
+                { q: "A bird ___ fly.", a: "can", o: "cannot" }, { q: "A fish ___ sing.", a: "cannot", o: "can" },
+                { q: "You ___ do it!", a: "can", o: "listened" }, { q: "He ___ speak Spanish.", a: "can", o: "watched" },
+                { q: "I am hungry, ___ I will eat a sandwich.", a: "so", o: "but" }, { q: "She is smart ___ also very kind.", a: "and", o: "because" },
+                { q: "He didn't go to school ___ he was sick.", a: "because", o: "but" }, { q: "Last week, we ___ our grandparents.", a: "visited", o: "visit" },
+                { q: "I ___ my homework two hours ago.", a: "finished", o: "finish" }, { q: "He ___ to the store yesterday.", a: "walked", o: "walks" },
+                { q: "You ___ swim very well.", a: "can", o: "listened" }, { q: "She ___ open the jar.", a: "cannot", o: "can" },
+                { q: "I will call you ___ I get home.", a: "when", o: "but" }, { q: "It is cold, ___ you should wear a jacket.", a: "so", o: "because" },
+                { q: "He ___ for the bus every morning.", a: "waits", o: "waited" }, { q: "They ___ at the joke.", a: "laughed", o: "laugh" },
+                { q: "I like reading ___ I don't like math.", a: "but", o: "and" }, { q: "She studied hard, ___ she passed the exam.", a: "so", o: "because" },
+                { q: "We ___ a movie last night.", a: "watched", o: "watch" }, { q: "He ___ the door for her.", a: "opened", o: "opens" },
+                { q: "___ you help me with this?", a: "Can", o: "Listened" }, { q: "They ___ come to the party.", a: "cannot", o: "can" },
+                { q: "I will go to bed ___ I finish my book.", a: "after", o: "but" }, { q: "She was tired, ___ she went to sleep.", a: "so", o: "and" }
+            ]
+        };
+
+        const pronounData = [
+            { q: "___ is my friend. Her name is Ana.", a: "She", o: ["He", "They", "It"] },
+            { q: "Carlos is a student. ___ is very smart.", a: "He", o: ["She", "I", "We"] },
+            { q: "The dog is barking. ___ is hungry.", a: "It", o: ["She", "He", "They"] },
+            { q: "My brother and I are a team. ___ always win.", a: "We", o: ["They", "You", "I"] },
+            { q: "Look at the students. ___ are playing.", a: "They", o: ["We", "She", "He"] },
+            { q: "My name is Sofia. ___ am 8 years old.", a: "I", o: ["You", "She", "It"] },
+            { q: "Are ___ ready for the game?", a: "You", o: ["I", "He", "We"] },
+            { q: "This is my cat. ___ likes to sleep.", a: "It", o: ["He", "She", "They"] },
+            { q: "My parents are doctors. ___ work at the hospital.", a: "They", o: ["We", "You", "I"] },
+            { q: "My sister is a great singer. ___ sings beautifully.", a: "She", o: ["He", "It", "We"] }
+        ];
       
         const readingData = [
             {
@@ -514,6 +670,39 @@
                     hard: { name: 'Difícil', timeLimit: 10, optionLogic: 'close' }
                 }
             },
+            grammar: {
+                name: 'Desafío Gramatical',
+                difficulties: {
+                    easy: { 
+                        name: 'Fácil', 
+                        timeLimit: 20, 
+                        data: grammarData.easy,
+                        instructionTitle: "Regla: Fundamentos Esenciales",
+                        instructionText: "<b>Pronombres:</b> Usa la palabra correcta para la persona (I, you, he, she, etc.).<br><br><b>Verbo 'to be':</b> Usa <b>'is'</b> para una sola cosa y <b>'are'</b> para varias.<br><br><b>Artículos:</b> Usa <b>'a'</b> antes de sonidos de consonante y <b>'an'</b> antes de sonidos de vocal."
+                    },
+                    normal: { 
+                        name: 'Normal', 
+                        timeLimit: 18, 
+                        data: grammarData.normal,
+                        instructionTitle: "Regla: Preposiciones y Presente Simple",
+                        instructionText: "Usa <b>'in'</b> (dentro), <b>'on'</b> (sobre), y <b>'under'</b> (debajo) para ubicar objetos.<br><br>Añade una <b>'-s'</b> al final de los verbos cuando la oración habla de él (He), ella (She) o eso (It)."
+                    },
+                    hard: { 
+                        name: 'Difícil', 
+                        timeLimit: 15, 
+                        data: grammarData.hard,
+                        instructionTitle: "Regla: Conectores y Pasado Simple",
+                        instructionText: "Usa <b>'and'</b> (y), <b>'but'</b> (pero), y <b>'because'</b> (porque) para unir ideas.<br><br>Para hablar del pasado, a muchos verbos se les añade <b>'-ed'</b> al final."
+                    }
+                }
+            },
+            pronouns: {
+                name: 'Pronombres Personales',
+                instructionTitle: '¿Qué son los Pronombres?',
+                instructionText: 'Los pronombres son palabras que reemplazan a los nombres de personas o cosas para no repetirlos.<br><br><b>I</b> (Yo) <br><b>You</b> (Tú/Ustedes) <br><b>He</b> (Él) <br><b>She</b> (Ella) <br><b>It</b> (Eso - para cosas o animales) <br><b>We</b> (Nosotros/as) <br><b>They</b> (Ellos/as)',
+                data: pronounData,
+                timeLimit: 15
+            },
             reading: { name: 'Lectura de Comprensión' }
         };
         
@@ -542,6 +731,8 @@
             selected: null,
             connections: []
         };
+        let selectedTable;
+        let currentFactIndex = 0;
 
         // --- Gesture State ---
         let touchStartX = 0;
@@ -632,7 +823,7 @@
             const subjects = {
                 'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division', 'connect'],
                 'Español': ['reading'],
-                'Inglés': ['english']
+                'Inglés': ['english', 'grammar', 'pronouns']
             };
 
             for (const subject in subjects) {
@@ -649,10 +840,6 @@
                         let typeName = '';
                         if (quizSettings[type]) {
                             typeName = quizSettings[type].name;
-                        } else if (type === 'english') {
-                            // Special handling for english categories if needed
-                            // For now, just show "Inglés"
-                            typeName = "Inglés";
                         }
                         typeDiv.innerHTML = `<h3 class="font-semibold text-lg">${typeName}</h3>`;
                         
@@ -777,7 +964,10 @@
             if (currentQuizType === 'reading') {
                 difficultySettings = null; 
                 startSession();
-            } else {
+            } else if (currentQuizType === 'pronouns') {
+                showInstructionScreen();
+            }
+            else {
                 showDifficultyScreen();
             }
         }
@@ -813,7 +1003,23 @@
                  mainType = 'english';
             }
             difficultySettings = { ...quizSettings[mainType].difficulties[level], key: level };
-            startSession();
+            
+            if (currentQuizType === 'grammar') {
+                showInstructionScreen();
+            } else {
+                startSession();
+            }
+        }
+
+        function showInstructionScreen() {
+            const settings = quizSettings[currentQuizType];
+            const title = difficultySettings ? difficultySettings.instructionTitle : settings.instructionTitle;
+            const text = difficultySettings ? difficultySettings.instructionText : settings.instructionText;
+
+            instructionTitleEl.textContent = title;
+            instructionTextEl.innerHTML = text; 
+
+            showScreen('instruction');
         }
 
         function startSession() {
@@ -825,8 +1031,8 @@
                  mainType = 'english';
             }
 
-            if (mainType === 'english') {
-                TOTAL_ROUNDS = 3;
+            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns') {
+                TOTAL_ROUNDS = 1; // Pronouns and Grammar are single rounds for now
                 QUESTIONS_PER_ROUND = 10;
             } else if (mainType === 'reading') {
                 sessionContent = [...readingData].sort(() => Math.random() - 0.5);
@@ -856,7 +1062,9 @@
                  mainType = 'english';
             }
 
-            if (mainType === 'reading') {
+            if (mainType === 'grammar') {
+                setupGrammarQuestion();
+            } else if (mainType === 'reading') {
                 setupReadingScreen();
             } else if (mainType === 'division' && difficultySettings.name.includes('Visual')) {
                 showNextDivisionGame();
@@ -978,6 +1186,30 @@
                     answer: data[word]
                 }));
 
+            } else if (mainType === 'grammar') {
+                const data = difficultySettings.data;
+                const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
+                const endIndex = startIndex + QUESTIONS_PER_ROUND;
+                if (sessionContent.length === 0) {
+                    let allSentences = [...data];
+                    for (let i = allSentences.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [allSentences[i], allSentences[j]] = [allSentences[j], allSentences[i]];
+                    }
+                    sessionContent = allSentences;
+                }
+                questions = sessionContent.slice(0, QUESTIONS_PER_ROUND * TOTAL_ROUNDS);
+            } else if (mainType === 'pronouns') {
+                let allPronounQuestions = [...quizSettings.pronouns.data];
+                 for (let i = allPronounQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allPronounQuestions[i], allPronounQuestions[j]] = [allPronounQuestions[j], allPronounQuestions[i]];
+                }
+                questions = allPronounQuestions.map(q => ({
+                    text: q.q.replace('___', '___'),
+                    answer: q.a,
+                    options: [...q.o, q.a].sort(() => Math.random() - 0.5)
+                }));
             } else if (mainType === 'reading') {
                 const reading = sessionContent[currentRound - 1];
                 questions = reading.questions.map(q => ({
@@ -1277,7 +1509,7 @@
                 }
                 if (mainType !== 'reading') {
                     screens.quiz.querySelector('#timer-container').style.display = 'block';
-                    startTimer();
+                    startTimer(timerProgress, timerText);
                 } else {
                     screens.quiz.querySelector('#timer-container').style.display = 'none';
                 }
@@ -1329,7 +1561,7 @@
                     const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
                     options.add(randomAnswer);
                 }
-            } else if (mainType === 'reading') {
+            } else if (mainType === 'reading' || mainType === 'pronouns') {
                 while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
                     const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
                     options.add(randomOption);
@@ -1370,6 +1602,14 @@
             isReadingPaused = false;
             feedbackContainer.textContent = '';
             feedbackContainer.classList.remove('text-red-500', 'text-green-500');
+            grammarFeedbackContainer.textContent = '';
+            grammarFeedbackContainer.classList.remove('text-red-500', 'text-green-500');
+            grammarInputEl.value = '';
+            grammarInputEl.disabled = false;
+            grammarInputEl.className = 'w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 transition';
+            checkGrammarBtn.disabled = false;
+            grammarHintDisplay.classList.add('hidden');
+            grammarHintBtn.style.display = 'block';
             while (answersContainer.firstChild) {
                 answersContainer.removeChild(answersContainer.firstChild);
             }
@@ -1386,8 +1626,13 @@
         }
 
         function handleTimeUp() {
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            showFeedback(false, correctAnswer);
+            if (currentQuizType === 'grammar') {
+                const correctAnswer = questions[currentQuestionIndex].a;
+                showGrammarFeedback(false, correctAnswer);
+            } else {
+                const correctAnswer = questions[currentQuestionIndex].answer;
+                showFeedback(false, correctAnswer);
+            }
         }
         
         function showFeedback(isCorrect, correctAnswer, selectedButton = null) {
@@ -1413,20 +1658,26 @@
             setTimeout(showNextQuestion, 2000);
         }
 
-        function startTimer() {
-            timeLeft = difficultySettings.timeLimit;
-            timerText.textContent = timeLeft;
-            timerProgress.style.strokeDashoffset = 0;
-            timerProgress.className = "stroke-current text-indigo-600";
+        function startTimer(progressEl, textEl) {
+            timeLeft = difficultySettings ? difficultySettings.timeLimit : quizSettings[currentQuizType].timeLimit;
+            textEl.textContent = timeLeft;
+            progressEl.style.strokeDashoffset = 0;
+            progressEl.className = "stroke-current text-indigo-600";
+            
+            const setCircleDashoffset = () => {
+                const timeFraction = timeLeft / (difficultySettings ? difficultySettings.timeLimit : quizSettings[currentQuizType].timeLimit);
+                const dashoffset = (1 - timeFraction) * FULL_DASH_ARRAY;
+                progressEl.style.strokeDashoffset = dashoffset;
+            };
             setCircleDashoffset();
 
             timer = setInterval(() => {
                 timeLeft--;
-                timerText.textContent = timeLeft;
+                textEl.textContent = timeLeft;
                 setCircleDashoffset();
 
-                if (timeLeft <= difficultySettings.timeLimit * 0.5) timerProgress.className = "stroke-current text-yellow-500";
-                if (timeLeft <= difficultySettings.timeLimit * 0.25) timerProgress.className = "stroke-current text-red-500";
+                if (timeLeft <= (difficultySettings ? difficultySettings.timeLimit : quizSettings[currentQuizType].timeLimit) * 0.5) progressEl.className = "stroke-current text-yellow-500";
+                if (timeLeft <= (difficultySettings ? difficultySettings.timeLimit : quizSettings[currentQuizType].timeLimit) * 0.25) progressEl.className = "stroke-current text-red-500";
 
                 if (timeLeft === 0) {
                     clearInterval(timer);
@@ -1434,13 +1685,6 @@
                 }
             }, 1000);
         }
-
-        function setCircleDashoffset() {
-            const timeFraction = timeLeft / difficultySettings.timeLimit;
-            const dashoffset = (1 - timeFraction) * FULL_DASH_ARRAY;
-            timerProgress.style.strokeDashoffset = dashoffset;
-        }
-      
       
       function showEnglishCategories() {
         currentQuizType = 'english';
@@ -1463,13 +1707,84 @@
             button.textContent = category.name;
             button.addEventListener('click', (e) => {
                 currentQuizCategory = e.currentTarget.dataset.category;
-                currentQuizType = 'english'; // Ensure quiz type is set
+                currentQuizType = 'english';
                 showDifficultyScreen(); 
             });
             container.appendChild(button);
             colorIndex++;
         }
+        
+        const pronounsButton = document.createElement('button');
+        pronounsButton.className = `w-full bg-gradient-to-br from-sky-500 to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 mt-4`;
+        pronounsButton.textContent = "🗣️ Pronombres Personales";
+        pronounsButton.addEventListener('click', () => {
+            selectQuizType('pronouns');
+        });
+        container.appendChild(pronounsButton);
+
+        const grammarButton = document.createElement('button');
+        grammarButton.className = `w-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 mt-2`;
+        grammarButton.textContent = "✍️ Desafío Gramatical";
+        grammarButton.addEventListener('click', () => {
+            currentQuizType = 'grammar';
+            showDifficultyScreen();
+        });
+        container.appendChild(grammarButton);
+
         showScreen('englishType');
+    }
+
+    function setupGrammarQuestion() {
+        resetState();
+        showScreen('grammar');
+        
+        if (currentQuestionIndex < questions.length) {
+            const question = questions[currentQuestionIndex];
+            grammarQuestionCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+            grammarScoreEl.textContent = `Puntaje: ${score}`;
+            
+            const questionHTML = question.q.replace('___', '<span class="font-bold text-indigo-600">___</span>');
+            grammarQuestionTextEl.innerHTML = questionHTML;
+            
+            grammarInputEl.focus();
+            startTimer(grammarTimerProgress, grammarTimerText);
+        } else {
+            handleRoundEnd();
+        }
+    }
+
+    function checkGrammarAnswer() {
+        clearInterval(timer);
+        const userAnswer = grammarInputEl.value.trim().toLowerCase();
+        const correctAnswer = questions[currentQuestionIndex].a.toLowerCase();
+        showGrammarFeedback(userAnswer === correctAnswer, questions[currentQuestionIndex].a);
+    }
+
+    function showGrammarFeedback(isCorrect, correctAnswerText) {
+        grammarInputEl.disabled = true;
+        checkGrammarBtn.disabled = true;
+
+        if (isCorrect) {
+            score++;
+            grammarFeedbackContainer.textContent = '¡Correcto!';
+            grammarFeedbackContainer.classList.add('text-green-500');
+            grammarInputEl.classList.add('border-green-500');
+        } else {
+            grammarFeedbackContainer.textContent = `La respuesta era: ${correctAnswerText}`;
+            grammarFeedbackContainer.classList.add('text-red-500');
+            grammarInputEl.classList.add('border-red-500');
+        }
+        
+        grammarScoreEl.textContent = `Puntaje: ${score}`;
+        currentQuestionIndex++;
+        
+        setTimeout(() => {
+            if (currentQuizType === 'grammar') {
+                setupGrammarQuestion();
+            } else {
+                showNextQuestion();
+            }
+        }, 2000);
     }
       
         
@@ -1485,7 +1800,7 @@
 
             if (totalScore === totalPossibleScore && difficultySettings) {
                 awardGem(mainType, difficultySettings.key, 'diamonds');
-                finalTitleEl.textContent = `¡PERFECTO, ${userName}! 💎`;
+                finalTitleEl.textContent = `¡PERFECTO, ${userName}! �`;
                 finalMotivationEl.textContent = "¡Has ganado un Diamante por tu increíble desempeño!";
             } else if (percentage >= 0.8 && difficultySettings) {
                 awardGem(mainType, difficultySettings.key, 'rubies');
@@ -1509,6 +1824,46 @@
 
             summaryTextEl.textContent = `${quizName}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
         }
+
+        function showTableSelectionScreen() {
+            const container = document.getElementById('table-buttons-container');
+            container.innerHTML = '';
+            for (let i = 2; i <= 9; i++) {
+                const button = document.createElement('button');
+                button.className = 'bg-indigo-500 text-white font-bold py-4 rounded-lg shadow-lg hover:bg-indigo-600 transition-all duration-300 text-2xl';
+                button.textContent = i;
+                button.addEventListener('click', () => setupTableReview(i));
+                container.appendChild(button);
+            }
+            showScreen('tableSelection');
+        }
+
+        function setupTableReview(tableNumber) {
+            selectedTable = tableNumber;
+            currentFactIndex = 0;
+            tableReviewTitleEl.textContent = `Repasando la Tabla del ${selectedTable}`;
+            displayCurrentFact();
+            showScreen('tableReview');
+        }
+
+        function displayCurrentFact() {
+            flashcardContainerEl.innerHTML = '';
+            const multiplier = currentFactIndex + 1;
+            const problem = `${selectedTable} × ${multiplier} = <span id="flashcard-answer-placeholder" class="ml-2">?</span>`;
+            flashcardContainerEl.innerHTML = problem;
+
+            setTimeout(() => {
+                const answer = selectedTable * multiplier;
+                const answerEl = document.getElementById('flashcard-answer-placeholder');
+                if (answerEl) {
+                    answerEl.textContent = answer;
+                    answerEl.classList.add('flashcard-answer');
+                }
+            }, 1000);
+
+            prevFactBtn.disabled = currentFactIndex === 0;
+            nextFactBtn.disabled = currentFactIndex === 9;
+        }
         
         // --- Event Listeners ---
         startWithNameBtn.addEventListener('click', saveUserAndStart);
@@ -1525,6 +1880,7 @@
         backToMainFromGemsBtn.addEventListener('click', () => showScreen('mainMenu'));
         backToMainFromStatsBtn.addEventListener('click', () => showScreen('mainMenu'));
         closePrizeAlertBtn.addEventListener('click', () => screens.prizeAlert.classList.add('hidden'));
+        startFromInstructionBtn.addEventListener('click', startSession);
 
         [...mathTypeButtons, ...spanishTypeButtons].forEach(button => {
              button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
@@ -1552,7 +1908,7 @@
             if (quizSettings.english.categories[currentQuizType]){
                  mainType = 'english';
             }
-            if (mainType === 'english') {
+            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns') {
                 showScreen('englishType'); 
             } else if (['reading'].includes(mainType)) {
                 showScreen('spanishType');
@@ -1566,6 +1922,11 @@
             backBtn.click(); 
         });
         
+        backFromGrammarBtn.addEventListener('click', () => {
+            resetState();
+            showScreen('difficulty');
+        });
+
         backFromDivisionGameBtn.addEventListener('click', () => {
             resetState();
             showScreen('difficulty');
@@ -1622,6 +1983,43 @@
             
             currentQuestionIndex++;
             setTimeout(showNextConnectGame, 2500);
+        });
+
+        checkGrammarBtn.addEventListener('click', checkGrammarAnswer);
+        grammarInputEl.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                checkGrammarAnswer();
+            }
+        });
+
+        grammarHintBtn.addEventListener('click', () => {
+            const currentQuestion = questions[currentQuestionIndex];
+            const correctAnswer = currentQuestion.a;
+            const incorrectAnswer = currentQuestion.o;
+
+            const options = [correctAnswer, incorrectAnswer].sort(() => Math.random() - 0.5);
+
+            grammarHintDisplay.innerHTML = `Pista: La respuesta es <b>${options[0]}</b> o <b>${options[1]}</b>.`;
+            grammarHintDisplay.classList.remove('hidden');
+            grammarHintBtn.style.display = 'none';
+        });
+
+        reviewTablesBtn.addEventListener('click', showTableSelectionScreen);
+        backToMathMenuBtn.addEventListener('click', () => showScreen('mathType'));
+        exitReviewBtn.addEventListener('click', showTableSelectionScreen);
+
+        nextFactBtn.addEventListener('click', () => {
+            if (currentFactIndex < 9) {
+                currentFactIndex++;
+                displayCurrentFact();
+            }
+        });
+
+        prevFactBtn.addEventListener('click', () => {
+            if (currentFactIndex > 0) {
+                currentFactIndex--;
+                displayCurrentFact();
+            }
         });
 
         restartBtn.addEventListener('click', () => {
