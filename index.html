@@ -1437,7 +1437,10 @@
             });
             
             divisionGameFeedbackEl.textContent = '';
+            checkDivisionBtn.disabled = false; // Re-enable button for the new question
+
             checkDivisionBtn.onclick = () => {
+                checkDivisionBtn.disabled = true; // Disable after one click
                 let isCorrect = true;
                 const targets = dropTargetsContainerEl.querySelectorAll('.drop-target');
                 if (itemsSourceContainerEl.children.length > 0) isCorrect = false;
@@ -1453,13 +1456,14 @@
                     divisionGameFeedbackEl.textContent = `¡Correcto! ${dividend} ÷ ${divisor} = ${quotient}`;
                     divisionGameFeedbackEl.classList.add('text-green-500');
                     divisionGameFeedbackEl.classList.remove('text-red-500');
-                    currentQuestionIndex++;
-                    setTimeout(showNextDivisionGame, 2000);
                 } else {
-                    divisionGameFeedbackEl.textContent = 'Inténtalo de nuevo.';
+                    divisionGameFeedbackEl.textContent = `Incorrecto. La respuesta era ${quotient} en cada grupo.`;
                     divisionGameFeedbackEl.classList.add('text-red-500');
                     divisionGameFeedbackEl.classList.remove('text-green-500');
                 }
+                
+                currentQuestionIndex++;
+                setTimeout(showNextDivisionGame, 2500);
             };
         }
 
