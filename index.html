@@ -179,6 +179,7 @@
             <div class="space-y-4">
                  <button data-quiz-type="reading" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Lectura de Comprensión</button>
                  <button data-quiz-type="spelling" class="w-full bg-gradient-to-br from-rose-500 to-red-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">✍️ Desafío de Ortografía</button>
+                 <button data-quiz-type="riddles" class="w-full bg-gradient-to-br from-lime-500 to-green-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">🤔 Adivinanzas Divertidas</button>
             </div>
             <button id="back-to-main-menu-btn-2" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
@@ -611,6 +612,39 @@
             { q: "¿Cuál está bien escrita?", a: "Así", o: ["Asi"] }, { q: "¿Cuál está bien escrita?", a: "País", o: ["Pais"] },
             { q: "¿Cuál está bien escrita?", a: "Día", o: ["Dia"] }, { q: "¿Cuál está bien escrita?", a: "Raíz", o: ["Raiz"] }
         ];
+
+        const riddleData = [
+            { q: "Tengo agujas pero no sé coser, tengo números pero no sé leer. ¿Qué soy?", a: "Un reloj", o: ["Un costurero", "Un libro", "Un teléfono"] },
+            { q: "Blanco por dentro, verde por fuera. Si quieres que te lo diga, espera. ¿Qué es?", a: "La pera", o: ["La manzana", "El limón", "El coco"] },
+            { q: "Tiene dientes y no come, tiene cabeza y no es hombre. ¿Qué es?", a: "El ajo", o: ["El peine", "La sierra", "El cepillo"] },
+            { q: "Vuelo de noche, duermo de día y nunca verás plumas en ala mía. ¿Qué soy?", a: "El murciélago", o: ["La lechuza", "El fantasma", "El avión"] },
+            { q: "Oro parece, plata no es. El que no lo adivine, bien tonto es. ¿Qué es?", a: "El plátano", o: ["El oro", "La plata", "El limón"] },
+            { q: "Te la digo y no me entiendes, te la repito y no me comprendes. ¿Qué es?", a: "La tela", o: ["La tele", "La palabra", "La canción"] },
+            { q: "En el campo me crié, atada con verdes lazos, y aquel que llora por mí me está partiendo en pedazos. ¿Qué soy?", a: "La cebolla", o: ["La lechuga", "El regalo", "La zanahoria"] },
+            { q: "Tiene ojos y no ve, tiene agua y no la bebe, tiene carne y no la come, tiene barba y no es hombre. ¿Qué es?", a: "El coco", o: ["El pez", "El río", "El pirata"] },
+            { q: "Todos me quieren para descansar. ¡Si ya te lo he dicho! No lo pienses más.", a: "La silla", o: ["La cama", "El sofá", "La hamaca"] },
+            { q: "Sal al campo por las noches si me quieres conocer, soy señor de grandes ojos, cara seria y gran saber. ¿Qué soy?", a: "El búho", o: ["El astrónomo", "El telescopio", "El gato"] },
+            { q: "No soy pájaro, pero puedo volar y llevar a gente de uno a otro lugar. ¿Qué soy?", a: "El avión", o: ["La cometa", "El helicóptero", "La nube"] },
+            { q: "Tengo una larga melena, soy fuerte y muy veloz, abro la boca muy grande y doy un susto con mi voz. ¿Quién soy?", a: "El león", o: ["El tigre", "El perro", "El caballo"] },
+            { q: "Llevo mi casa al hombro, camino sin una pata y voy dejando mi huella con un hilito de plata. ¿Quién soy?", a: "El caracol", o: ["La tortuga", "La serpiente", "El gusano"] },
+            { q: "Soy pequeño y blandito y mi casa llevo sobre el lomito. ¿Quién soy?", a: "El caracol", o: ["La tortuga", "El armadillo", "El cangrejo"] },
+            { q: "Tengo escamas, no soy pez, tengo corona, no soy rey. ¿Qué soy?", a: "La piña", o: ["La serpiente", "El rey", "El cocodrilo"] },
+            { q: "Siempre estoy en la sopa, pero nunca me puedes comer. ¿Qué soy?", a: "La cuchara", o: ["La sal", "La letra 'o'", "El fideo"] },
+            { q: "Si me nombras, desaparezco. ¿Qué soy?", a: "El silencio", o: ["El eco", "El secreto", "El aire"] },
+            { q: "Tiene cuello pero no cabeza, tiene brazos pero no manos. ¿Qué es?", a: "La camisa", o: ["La botella", "El árbol", "El río"] },
+            { q: "Cuanto más se moja, más te seca. ¿Qué es?", a: "La toalla", o: ["El jabón", "La esponja", "El sol"] },
+            { q: "Tiene un solo ojo y una cara ancha. ¿Qué es?", a: "La aguja", o: ["El cíclope", "El clavo", "El botón"] },
+            { q: "Subo llena y bajo vacía, y si no me apuro, la sopa se enfría. ¿Qué soy?", a: "La cuchara", o: ["El tenedor", "El ascensor", "La botella"] },
+            { q: "En un cuarto me arrinconan sin acordarse de mí, pero pronto van a buscarme cuando tienen que subir. ¿Qué soy?", a: "La escalera", o: ["La silla", "El ascensor", "El taburete"] },
+            { q: "Soy chiquito, puedo nadar, vivo en los ríos y en el alto mar. ¿Quién soy?", a: "El pez", o: ["El barco", "El delfín", "La ballena"] },
+            { q: "Canto en la orilla, vivo en el agua, no soy pescado ni soy cigarra. ¿Quién soy?", a: "La rana", o: ["El sapo", "El grillo", "El pato"] },
+            { q: "Dos pinzas tengo, hacia atrás camino, en el agua vivo, en el mar o en el río. ¿Quién soy?", a: "El cangrejo", o: ["La langosta", "El escorpión", "El alacrán"] },
+            { q: "No lo parezco y soy pez, y mi forma la refleja una pieza de ajedrez. ¿Quién soy?", a: "El caballito de mar", o: ["El pez espada", "El tiburón", "La torre"] },
+            { q: "Es la reina de los mares, su dentadura es muy buena, y por no ir nunca vacía, siempre dicen que va llena. ¿Quién es?", a: "La ballena", o: ["La reina", "El barco", "La sirena"] },
+            { q: "Soy un animal muy elegante, muy veloz y poco fiero; y cuando quiero calzarme, voy a casa del herrero. ¿Quién soy?", a: "El caballo", o: ["La cebra", "El burro", "El ciervo"] },
+            { q: "De la tierra voy al cielo y del cielo he de volver; soy el alma de los campos que los hace florecer. ¿Quién soy?", a: "El agua", o: ["La semilla", "El sol", "El viento"] },
+            { q: "Un señor gordito, muy coloradito, no toma café, siempre toma té. ¿Quién es?", a: "El tomate", o: ["La fresa", "La manzana", "El pimiento"] }
+        ];
       
         const readingData = [
             {
@@ -736,6 +770,11 @@
                 data: ortografiaData,
                 timeLimit: 15
             },
+            riddles: {
+                name: 'Adivinanzas',
+                data: riddleData,
+                timeLimit: 20
+            },
             reading: { name: 'Lectura de Comprensión' }
         };
         
@@ -855,7 +894,7 @@
             gemsContainerEl.innerHTML = '';
             const subjects = {
                 'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division', 'connect'],
-                'Español': ['reading', 'spelling'],
+                'Español': ['reading', 'spelling', 'riddles'],
                 'Inglés': ['english', 'grammar', 'pronouns']
             };
 
@@ -994,7 +1033,7 @@
         
         function selectQuizType(type) {
             currentQuizType = type;
-            if (currentQuizType === 'reading' || currentQuizType === 'spelling') {
+            if (currentQuizType === 'reading' || currentQuizType === 'spelling' || currentQuizType === 'riddles') {
                 difficultySettings = null; 
                 startSession();
             } else if (currentQuizType === 'pronouns') {
@@ -1065,7 +1104,7 @@
                  mainType = 'english';
             }
 
-            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling') {
+            if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling' || mainType === 'riddles') {
                 TOTAL_ROUNDS = 3; 
                 QUESTIONS_PER_ROUND = 10;
             } else if (mainType === 'reading') {
@@ -1217,7 +1256,7 @@
                     answer: data[word]
                 }));
 
-            } else if (mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling') {
+            } else if (mainType === 'grammar' || mainType === 'pronouns' || mainType === 'spelling' || mainType === 'riddles') {
                 const data = mainType === 'grammar' ? difficultySettings.data : quizSettings[mainType].data;
                 if (sessionContent.length === 0) {
                     let allQuestionsData = [...data];
@@ -1236,12 +1275,10 @@
                 
                 const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
                 const endIndex = startIndex + QUESTIONS_PER_ROUND;
-                const roundQuestionsData = sessionContent.slice(startIndex, endIndex);
+                questions = sessionContent.slice(startIndex, endIndex);
                 
-                if (mainType === 'grammar') {
-                    questions = roundQuestionsData;
-                } else {
-                    questions = roundQuestionsData.map(q => ({
+                if (mainType !== 'grammar') {
+                    questions = questions.map(q => ({
                         text: q.q,
                         answer: q.a,
                         options: [...q.o, q.a].sort(() => Math.random() - 0.5)
@@ -1528,6 +1565,12 @@
                 const question = questions[currentQuestionIndex];
                 questionCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
                 scoreEl.textContent = `Puntaje: ${score}`;
+                
+                if (currentQuizType === 'riddles') {
+                    questionTextEl.className = 'text-xl sm:text-2xl font-semibold text-gray-800 py-4 min-h-[8rem] flex items-center justify-center';
+                } else {
+                    questionTextEl.className = 'text-2xl sm:text-4xl font-bold text-gray-800 h-16 flex items-center justify-center';
+                }
                 questionTextEl.textContent = question.text;
 
                 const options = question.options || generateOptions(question.answer);
@@ -1569,7 +1612,7 @@
                     `¡Sigue así, campeón!`
                 ];
 
-                if (score < questions.length / 2) {
+                if (score < QUESTIONS_PER_ROUND / 2) {
                     const message = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
                     roundEndTitleEl.textContent = message;
                 } else {
@@ -1577,7 +1620,7 @@
                     roundEndTitleEl.textContent = message;
                 }
                 
-                roundScoreEl.textContent = `Tu puntaje en esta ronda: ${score} de ${questions.length}`;
+                roundScoreEl.textContent = `Tu puntaje en esta ronda: ${score} de ${QUESTIONS_PER_ROUND}`;
                 showScreen('roundTransition');
             } else {
                 showFinalScore();
@@ -1598,7 +1641,7 @@
                     const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
                     options.add(randomAnswer);
                 }
-            } else if (mainType === 'reading' || mainType === 'pronouns' || mainType === 'spelling') {
+            } else if (mainType === 'reading' || mainType === 'pronouns' || mainType === 'spelling' || mainType === 'riddles') {
                 while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
                     const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
                     options.add(randomOption);
@@ -1777,7 +1820,7 @@
         
         if (currentQuestionIndex < questions.length) {
             const question = questions[currentQuestionIndex];
-            grammarQuestionCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${questions.length}`;
+            grammarQuestionCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
             grammarScoreEl.textContent = `Puntaje: ${score}`;
             
             const questionHTML = question.q.replace('___', '<span class="font-bold text-indigo-600">___</span>');
@@ -1947,7 +1990,7 @@
             }
             if (mainType === 'english' || mainType === 'grammar' || mainType === 'pronouns') {
                 showScreen('englishType'); 
-            } else if (['reading', 'spelling'].includes(mainType)) {
+            } else if (['reading', 'spelling', 'riddles'].includes(mainType)) {
                 showScreen('spanishType');
             } else {
                 showScreen('mathType');
