@@ -173,7 +173,7 @@
             </div>
             <h2 id="division-game-title" class="text-2xl font-bold text-gray-800 mb-4">¡A repartir!</h2>
             <p id="division-game-instruction" class="text-lg text-gray-600 mb-4"></p>
-            <div id="items-source-container" class="h-32 p-2 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-2 mb-4"></div>
+            <div id="items-source-container" class="min-h-32 p-2 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-2 mb-4"></div>
             <div id="drop-targets-container" class="grid grid-cols-4 gap-4 mb-4"></div>
             <div id="division-game-feedback" class="h-8 text-xl font-bold mb-4"></div>
             <button id="check-division-btn" class="w-full bg-gradient-to-br from-green-500 to-emerald-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">Revisar</button>
@@ -245,7 +245,7 @@
         // --- PWA Service Worker Registration ---
         if ('serviceWorker' in navigator) {
             const serviceWorkerCode = `
-                const CACHE_NAME = 'math-spanish-quiz-cache-v24';
+                const CACHE_NAME = 'math-spanish-quiz-cache-v26';
                 const urlsToCache = ['/'];
                 self.addEventListener('install', event => {
                     event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
@@ -888,7 +888,7 @@
             dropTargetsContainerEl.className = `grid grid-cols-${divisor} gap-4 mb-4`;
             for (let i = 0; i < divisor; i++) {
                 const div = document.createElement('div');
-                div.className = 'drop-target h-32 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-center gap-1 p-1';
+                div.className = 'drop-target min-h-32 border-2 border-dashed rounded-lg flex flex-wrap justify-center items-start content-start gap-1 p-1';
                 dropTargetsContainerEl.appendChild(div);
             }
             
