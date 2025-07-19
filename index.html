@@ -173,6 +173,17 @@
             </div>
             <button id="back-to-main-menu-btn-2" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
+      
+      
+      <!-- pantalla de categorias de ingles -->
+      <div id="english-type-screen" class="hidden">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">Inglés</h1>
+    <p class="text-gray-600 mb-8">Elige una categoría para practicar.</p>
+    <div id="english-type-buttons-container" class="space-y-4">
+        </div>
+    <button id="back-to-main-menu-from-english-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+</div>
+      
 
         <!-- Difficulty Screen -->
         <div id="difficulty-screen" class="hidden">
@@ -305,22 +316,24 @@
         }
 
         // --- DOM Elements ---
-        const screens = {
-            nameInput: document.getElementById('name-input-screen'),
-            mainMenu: document.getElementById('main-menu-screen'),
-            gems: document.getElementById('gems-screen'),
-            stats: document.getElementById('stats-screen'),
-            prizeAlert: document.getElementById('prize-alert-screen'),
-            mathType: document.getElementById('math-type-screen'),
-            spanishType: document.getElementById('spanish-type-screen'),
-            difficulty: document.getElementById('difficulty-screen'),
-            divisionVisual: document.getElementById('division-visual-screen'),
-            reading: document.getElementById('reading-screen'),
-            connectGame: document.getElementById('connect-game-screen'),
-            quiz: document.getElementById('quiz-screen'),
-            roundTransition: document.getElementById('round-transition-screen'),
-            end: document.getElementById('end-screen')
-        };
+const screens = {
+    nameInput: document.getElementById('name-input-screen'),
+    mainMenu: document.getElementById('main-menu-screen'),
+    gems: document.getElementById('gems-screen'),
+    stats: document.getElementById('stats-screen'),
+    prizeAlert: document.getElementById('prize-alert-screen'),
+    mathType: document.getElementById('math-type-screen'),
+    spanishType: document.getElementById('spanish-type-screen'),
+    difficulty: document.getElementById('difficulty-screen'),
+    divisionVisual: document.getElementById('division-visual-screen'),
+    reading: document.getElementById('reading-screen'),
+    connectGame: document.getElementById('connect-game-screen'),
+    quiz: document.getElementById('quiz-screen'),
+    roundTransition: document.getElementById('round-transition-screen'),
+    end: document.getElementById('end-screen'),
+    englishType: document.getElementById('english-type-screen')
+};
+      
         const nameInputEl = document.getElementById('name-input');
         const startWithNameBtn = document.getElementById('start-with-name-btn');
         const welcomeTitleEl = document.getElementById('welcome-title');
@@ -390,21 +403,30 @@ const welcomeMessages = [
     "¡Vamos a aprender algo nuevo hoy!"
 ];
 
-        // --- Content Data ---
-        const englishData = {
-            colors: {
-                'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise',
-                'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby'
-            },
-            animals: {
-                'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog',
-                'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly'
-            },
-            verbs: {
-                'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen',
-                'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find'
-            }
-        };
+        
+// --- Content Data ---
+const englishData = {
+    colors: {
+        'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise', 'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby'
+    },
+    animals: {
+        'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog', 'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly', 'Tortuga': 'Turtle', 'Ardilla': 'Squirrel', 'Ciervo': 'Deer', 'Canguro': 'Kangaroo'
+    },
+    verbs: {
+        'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen', 'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find', 'Sentir': 'Feel', 'Amar': 'Love'
+    },
+    schoolSupplies: {
+        'Lápiz': 'Pencil', 'Cuaderno': 'Notebook', 'Libro': 'Book', 'Mochila': 'Backpack', 'Tijeras': 'Scissors', 'Pegamento': 'Glue', 'Regla': 'Ruler', 'Pizarrón': 'Blackboard', 'Borrador': 'Eraser', 'Pluma': 'Pen', 'Marcador': 'Marker', 'Sacapuntas': 'Pencil sharpener', 'Calculadora': 'Calculator', 'Escritorio': 'Desk', 'Silla': 'Chair', 'Computadora': 'Computer', 'Grapadora': 'Stapler', 'Cinta adhesiva': 'Tape', 'Pintura': 'Paint', 'Pincel': 'Brush', 'Mapa': 'Map', 'Globo terráqueo': 'Globe', 'Diccionario': 'Dictionary', 'Papel': 'Paper', 'Carpeta': 'Folder', 'Crayón': 'Crayon', 'Tiza': 'Chalk', 'Mesa': 'Table', 'Uniforme': 'Uniform', 'Gimnasio': 'Gym'
+    },
+    family: {
+        'Madre': 'Mother', 'Padre': 'Father', 'Hermano': 'Brother', 'Hermana': 'Sister', 'Abuela': 'Grandmother', 'Abuelo': 'Grandfather', 'Tío': 'Uncle', 'Tía': 'Aunt', 'Primo/a': 'Cousin', 'Hijo': 'Son', 'Hija': 'Daughter', 'Bebé': 'Baby', 'Sobrino': 'Nephew', 'Sobrina': 'Niece', 'Nieto': 'Grandson', 'Nieta': 'Granddaughter', 'Esposo': 'Husband', 'Esposa': 'Wife', 'Suegro': 'Father-in-law', 'Suegra': 'Mother-in-law', 'Cuñado': 'Brother-in-law', 'Cuñada': 'Sister-in-law', 'Padrino': 'Godfather', 'Madrina': 'Godmother', 'Gemelo/a': 'Twin', 'Parientes': 'Relatives', 'Amigo/a': 'Friend', 'Padres': 'Parents', 'Hijos (plural)': 'Children', 'Abuelos (plural)': 'Grandparents'
+    },
+    placesInCity: {
+        'Escuela': 'School', 'Parque': 'Park', 'Tienda': 'Store', 'Hospital': 'Hospital', 'Restaurante': 'Restaurant', 'Banco': 'Bank', 'Cine': 'Cinema', 'Biblioteca': 'Library', 'Supermercado': 'Supermarket', 'Estación de policía': 'Police station', 'Estación de bomberos': 'Fire station', 'Aeropuerto': 'Airport', 'Estación de tren': 'Train station', 'Museo': 'Museum', 'Zoológico': 'Zoo', 'Panadería': 'Bakery', 'Farmacia': 'Pharmacy', 'Oficina de correos': 'Post office', 'Hotel': 'Hotel', 'Gimnasio': 'Gym', 'Playa': 'Beach', 'Montaña': 'Mountain', 'Río': 'River', 'Puente': 'Bridge', 'Calle': 'Street', 'Avenida': 'Avenue', 'Plaza': 'Square', 'Iglesia': 'Church', 'Fábrica': 'Factory', 'Estacionamiento': 'Parking lot'
+    }
+};
+      
+      
         const readingData = [
             {
                 title: 'El Universo Creativo de Roblox',
@@ -475,13 +497,29 @@ const welcomeMessages = [
             subtraction: { name: 'Restas', difficulties: { easy: { name: 'Fácil', range: [1, 9], timeLimit: 15, optionLogic: 'wide' }, normal: { name: 'Normal', range: [10, 99], timeLimit: 12, optionLogic: 'plausible' }, hard: { name: 'Difícil', range: [50, 200], timeLimit: 8, optionLogic: 'close' }}},
             division: { name: 'Divisiones', difficulties: { easy: { name: 'Fácil (Visual)' }, normal: { name: 'Normal (Inversa de x)', timeLimit: 15 }, hard: { name: 'Difícil (con Resto)', timeLimit: 20 }}},
             connect: { name: 'Conectar Operaciones', difficulties: { easy: { name: 'Fácil (Sumas)' }, normal: { name: 'Normal (Multiplicación)' }, hard: { name: 'Difícil (Mixto)' }}},
-            english: { name: 'Inglés', difficulties: { easy: { name: 'Fácil (Colores)', timeLimit: 15, optionLogic: 'plausible', data: englishData.colors }, normal: { name: 'Normal (Animales)', timeLimit: 12, optionLogic: 'plausible', data: englishData.animals }, hard: { name: 'Difícil (Verbos)', timeLimit: 10, optionLogic: 'close', data: englishData.verbs }}},
-            reading: { name: 'Lectura de Comprensión' }
-        };
+            english: {
+        name: 'Inglés',
+        categories: {
+            colors: { name: 'Colores', data: englishData.colors },
+            animals: { name: 'Animales', data: englishData.animals },
+            verbs: { name: 'Verbos', data: englishData.verbs },
+            schoolSupplies: { name: 'Útiles Escolares', data: englishData.schoolSupplies },
+            family: { name: 'Familia', data: englishData.family },
+            placesInCity: { name: 'Lugares de la Ciudad', data: englishData.placesInCity }
+        },
+        difficulties: {
+            easy: { name: 'Fácil', timeLimit: 15, optionLogic: 'plausible' },
+            normal: { name: 'Normal', timeLimit: 12, optionLogic: 'plausible' },
+            hard: { name: 'Difícil', timeLimit: 10, optionLogic: 'close' }
+        }
+    },
+    reading: { name: 'Lectura de Comprensión' }
+};
         
         // --- Quiz State ---
         let userName = '';
         let currentQuizType;
+        let currentQuizCategory;
         let difficultySettings;
         let questions = [];
         let sessionContent = [];
@@ -717,71 +755,77 @@ const welcomeMessages = [
         }
         
         function selectQuizType(type) {
-            currentQuizType = type;
-            if (currentQuizType === 'reading') {
-                difficultySettings = null; // No difficulty for reading
-                startSession();
-            } else {
-                difficultyTitle.textContent = quizSettings[type].name;
-                
-                difficultyButtonsContainer.innerHTML = '';
-                const levels = quizSettings[type].difficulties;
-                const gradients = {
-                    easy: 'from-green-500 to-emerald-600',
-                    normal: 'from-yellow-500 to-amber-600',
-                    hard: 'from-red-500 to-rose-600'
-                };
-                Object.keys(levels).forEach(level => {
-                    const button = document.createElement('button');
-                    button.dataset.difficulty = level;
-                    button.className = `w-full bg-gradient-to-br ${gradients[level]} text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`;
-                    button.textContent = levels[level].name;
-                    button.addEventListener('click', () => selectDifficulty(level));
-                    difficultyButtonsContainer.appendChild(button);
-                });
-
-                showScreen('difficulty');
-            }
-        }
+    currentQuizType = type;
+    if (currentQuizType === 'reading') {
+        difficultySettings = null; // No hay dificultad para lectura
+        startSession();
+    } else {
+        // Para todos los demás tipos, llamamos a la función genérica
+        // que se encarga de mostrar la pantalla de dificultad.
+        showDifficultyScreen();
+    }
+}
         
+      
+      // AÑADIR una nueva función genérica para mostrar la pantalla de dificultad
+function showDifficultyScreen() {
+    const settings = quizSettings[currentQuizType];
+    difficultyTitle.textContent = settings.name;
+
+    difficultyButtonsContainer.innerHTML = '';
+    const levels = settings.difficulties;
+    const gradients = {
+        easy: 'from-green-500 to-emerald-600',
+        normal: 'from-yellow-500 to-amber-600',
+        hard: 'from-red-500 to-rose-600'
+    };
+    Object.keys(levels).forEach(level => {
+        const button = document.createElement('button');
+        button.dataset.difficulty = level;
+        button.className = `w-full bg-gradient-to-br ${gradients[level]} text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`;
+        button.textContent = levels[level].name;
+        button.addEventListener('click', () => selectDifficulty(level));
+        difficultyButtonsContainer.appendChild(button);
+    });
+
+    showScreen('difficulty');
+}
+      
+      
         function selectDifficulty(level) {
             difficultySettings = { ...quizSettings[currentQuizType].difficulties[level], key: level };
             startSession();
         }
 
         function startSession() {
-            totalScore = 0;
-            currentRound = 1;
-            sessionContent = [];
+    totalScore = 0;
+    currentRound = 1;
+    sessionContent = []; // Se resetea el contenido de la sesión
 
-            if (currentQuizType === 'english') {
-                TOTAL_ROUNDS = 3;
-                QUESTIONS_PER_ROUND = 10;
-                const data = difficultySettings.data;
-                let allWords = Object.keys(data);
-                for (let i = allWords.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
-                }
-                const totalQuestionsNeeded = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
-                sessionContent = allWords.slice(0, totalQuestionsNeeded);
-            } else if (currentQuizType === 'reading') {
-                sessionContent = [...readingData].sort(() => Math.random() - 0.5);
-                TOTAL_ROUNDS = sessionContent.length;
-                QUESTIONS_PER_ROUND = sessionContent[0].questions.length;
-            } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
-                TOTAL_ROUNDS = 3;
-                QUESTIONS_PER_ROUND = 5; 
-            } else if (currentQuizType === 'connect') {
-                TOTAL_ROUNDS = 3;
-                QUESTIONS_PER_ROUND = 1; // Each "question" is a full board of 5 connections
-            }
-             else {
-                TOTAL_ROUNDS = 3;
-                QUESTIONS_PER_ROUND = 10;
-            }
-            startRound();
-        }
+    // --- LÓGICA CORREGIDA ---
+    if (currentQuizType === 'english') {
+        TOTAL_ROUNDS = 3;
+        QUESTIONS_PER_ROUND = 10;
+        // Ya no se preparan las preguntas aquí, se hará en generateQuestions()
+    } else if (currentQuizType === 'reading') {
+        sessionContent = [...readingData].sort(() => Math.random() - 0.5);
+        TOTAL_ROUNDS = sessionContent.length;
+        QUESTIONS_PER_ROUND = sessionContent[0].questions.length;
+    } else if (currentQuizType === 'division' && difficultySettings.name.includes('Visual')) {
+        TOTAL_ROUNDS = 3;
+        QUESTIONS_PER_ROUND = 5; 
+    } else if (currentQuizType === 'connect') {
+        TOTAL_ROUNDS = 3;
+        QUESTIONS_PER_ROUND = 1;
+    } else {
+        TOTAL_ROUNDS = 3;
+        QUESTIONS_PER_ROUND = 10;
+    }
+    
+    // El flujo continúa hacia startRound(), que llamará a generateQuestions()
+    startRound();
+}
+      
         
         function startRound() {
             score = 0;
@@ -873,41 +917,67 @@ const welcomeMessages = [
         }
 
         function generateQuestions() {
-            questions = [];
-            if (currentQuizType === 'english') {
-                const data = difficultySettings.data;
-                const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
-                const endIndex = startIndex + QUESTIONS_PER_ROUND;
-                const roundWords = sessionContent.slice(startIndex, endIndex);
+    questions = [];
+    if (currentQuizType === 'english') {
+        const data = quizSettings.english.categories[currentQuizCategory].data;
+        const startIndex = (currentRound - 1) * QUESTIONS_PER_ROUND;
+        const endIndex = startIndex + QUESTIONS_PER_ROUND;
 
-                questions = roundWords.map(word => ({
-                    text: `¿Cómo se dice "${word}"?`,
-                    answer: data[word]
-                }));
-            } else if (currentQuizType === 'reading') {
-                const reading = sessionContent[currentRound - 1];
-                questions = reading.questions.map(q => ({
-                    text: q.q,
-                    answer: q.a,
-                    options: [...q.o, q.a].sort(() => Math.random() - 0.5)
-                }));
-            } else if (currentQuizType === 'division') {
-                for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
-                    questions.push(generateDivisionQuestion());
+        // Si es la primera ronda, preparamos las palabras para toda la sesión
+        if (sessionContent.length === 0) {
+            let allWords = Object.keys(data);
+            const totalQuestionsNeeded = QUESTIONS_PER_ROUND * TOTAL_ROUNDS;
+
+            // --- NUEVO "SEGURO DE VIDA" ---
+            // Si no hay suficientes palabras únicas, las repetimos hasta llenar la lista
+            if (allWords.length > 0 && allWords.length < totalQuestionsNeeded) {
+                const tempWords = [];
+                while (tempWords.length < totalQuestionsNeeded) {
+                    tempWords.push(...allWords); // Añade toda la lista de palabras otra vez
                 }
-            } else if (currentQuizType === 'connect') {
-                const operations = [];
-                for (let i = 0; i < 5; i++) {
-                    operations.push(generateConnectQuestion());
-                }
-                questions = [operations]; // One "question" which is an array of 5 operations
+                allWords = tempWords.slice(0, totalQuestionsNeeded); // Corta la lista al tamaño exacto
             }
-             else {
-                for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
-                    questions.push(generateMathQuestion());
-                }
+            // --- FIN DEL "SEGURO DE VIDA" ---
+
+            // Barajamos las palabras (ahora la lista siempre tendrá 30)
+            for (let i = allWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [allWords[i], allWords[j]] = [allWords[j], allWords[i]];
             }
+            sessionContent = allWords;
         }
+
+        const roundWords = sessionContent.slice(startIndex, endIndex);
+
+        questions = roundWords.map(word => ({
+            text: `¿Cómo se dice "${word}"?`,
+            answer: data[word]
+        }));
+
+    } else if (currentQuizType === 'reading') {
+        const reading = sessionContent[currentRound - 1];
+        questions = reading.questions.map(q => ({
+            text: q.q,
+            answer: q.a,
+            options: [...q.o, q.a].sort(() => Math.random() - 0.5)
+        }));
+    } else if (currentQuizType === 'division') {
+        for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+            questions.push(generateDivisionQuestion());
+        }
+    } else if (currentQuizType === 'connect') {
+        const operations = [];
+        for (let i = 0; i < 5; i++) {
+            operations.push(generateConnectQuestion());
+        }
+        questions = [operations];
+    } else {
+        for (let i = 0; i < QUESTIONS_PER_ROUND; i++) {
+            questions.push(generateMathQuestion());
+        }
+    }
+}
+      
 
         function generateMathQuestion() {
             let num1, num2, answer, text;
@@ -1216,47 +1286,50 @@ const welcomeMessages = [
                 showFinalScore();
             }
         }
+      
 
         function generateOptions(correctAnswer) {
-            const options = new Set([correctAnswer]);
-            if (currentQuizType === 'english') {
-                const allAnswers = Object.values(difficultySettings.data);
-                while (options.size < 4 && options.size < allAnswers.length) {
-                    const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
-                    options.add(randomAnswer);
-                }
-            } else if (currentQuizType === 'reading') {
-                while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
-                    const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
-                    options.add(randomOption);
-                }
-            }
-            else if (currentQuizType === 'division' && typeof correctAnswer === 'string') { // Division with remainder
-                while (options.size < 4) {
-                    const [q, r] = correctAnswer.split(' sobra ').map(Number);
-                    const wrongQ = q + (Math.random() < 0.5 ? -1 : 1);
-                    const wrongR = r + (Math.random() < 0.5 ? -1 : 1);
-                    if (wrongQ > 0) options.add(`${wrongQ} sobra ${r}`);
-                    if (wrongR >= 0 && wrongR !== r) options.add(`${q} sobra ${wrongR}`);
-                }
-            }
-            else {
-                while (options.size < 4) {
-                    let offset;
-                    const randomFactor = Math.random() < 0.5 ? -1 : 1;
-                    switch(difficultySettings.optionLogic) {
-                        case 'wide': offset = (Math.floor(Math.random() * 8) + 3) * randomFactor; break;
-                        case 'close': offset = (Math.floor(Math.random() * 2) + 1) * randomFactor; break;
-                        default: offset = (Math.floor(Math.random() * 5) + 1) * randomFactor; break;
-                    }
-                    let wrongAnswer = correctAnswer + offset;
-                    if (wrongAnswer >= 0 && wrongAnswer !== correctAnswer) {
-                        options.add(wrongAnswer);
-                    }
-                }
-            }
-            return Array.from(options).sort(() => Math.random() - 0.5);
+    const options = new Set([correctAnswer]);
+    if (currentQuizType === 'english') {
+        // Obtenemos todas las posibles respuestas de la categoría seleccionada
+        const allAnswers = Object.values(quizSettings.english.categories[currentQuizCategory].data);
+        while (options.size < 4 && options.size < allAnswers.length) {
+            const randomAnswer = allAnswers[getRandomNumber(0, allAnswers.length - 1)];
+            options.add(randomAnswer);
         }
+    } else if (currentQuizType === 'reading') {
+        while (options.size < 4 && options.size < questions[currentQuestionIndex].options.length) {
+            const randomOption = questions[currentQuestionIndex].options[getRandomNumber(0, questions[currentQuestionIndex].options.length - 1)];
+            options.add(randomOption);
+        }
+    }
+    else if (currentQuizType === 'division' && typeof correctAnswer === 'string') { // División con resto
+        while (options.size < 4) {
+            const [q, r] = correctAnswer.split(' sobra ').map(Number);
+            const wrongQ = q + (Math.random() < 0.5 ? -1 : 1);
+            const wrongR = r + (Math.random() < 0.5 ? -1 : 1);
+            if (wrongQ > 0) options.add(`${wrongQ} sobra ${r}`);
+            if (wrongR >= 0 && wrongR !== r) options.add(`${q} sobra ${wrongR}`);
+        }
+    }
+    else {
+        while (options.size < 4) {
+            let offset;
+            const randomFactor = Math.random() < 0.5 ? -1 : 1;
+            switch(difficultySettings.optionLogic) {
+                case 'wide': offset = (Math.floor(Math.random() * 8) + 3) * randomFactor; break;
+                case 'close': offset = (Math.floor(Math.random() * 2) + 1) * randomFactor; break;
+                default: offset = (Math.floor(Math.random() * 5) + 1) * randomFactor; break;
+            }
+            let wrongAnswer = correctAnswer + offset;
+            if (wrongAnswer >= 0 && wrongAnswer !== correctAnswer) {
+                options.add(wrongAnswer);
+            }
+        }
+    }
+    return Array.from(options).sort(() => Math.random() - 0.5);
+}
+      
         
         function resetState() {
             clearInterval(timer);
@@ -1335,6 +1408,43 @@ const welcomeMessages = [
             const dashoffset = (1 - timeFraction) * FULL_DASH_ARRAY;
             timerProgress.style.strokeDashoffset = dashoffset;
         }
+      
+      
+      // AÑADIR esta nueva función para mostrar el submenú de Inglés
+function showEnglishCategories() {
+    currentQuizType = 'english';
+    const container = document.getElementById('english-type-buttons-container');
+    container.innerHTML = ''; // Limpiar botones anteriores
+    const categories = quizSettings.english.categories;
+    
+    // Paleta de colores para los botones
+    const gradients = [
+        'from-purple-500 to-pink-600',
+        'from-rose-500 to-red-600',
+        'from-fuchsia-500 to-purple-600',
+        'from-violet-500 to-indigo-600',
+        'from-pink-500 to-rose-600',
+        'from-red-500 to-orange-600'
+    ];
+
+    let colorIndex = 0;
+    for (const categoryKey in categories) {
+        const category = categories[categoryKey];
+        const button = document.createElement('button');
+        button.dataset.category = categoryKey;
+        button.className = `w-full bg-gradient-to-br ${gradients[colorIndex % gradients.length]} text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300`;
+        button.textContent = category.name;
+        button.addEventListener('click', (e) => {
+            currentQuizCategory = e.currentTarget.dataset.category;
+            // Después de elegir categoría, vamos a la pantalla de dificultad
+            showDifficultyScreen(); 
+        });
+        container.appendChild(button);
+        colorIndex++;
+    }
+    showScreen('englishType');
+}
+      
         
         function showFinalScore() {
             showScreen('end');
@@ -1371,9 +1481,10 @@ const welcomeMessages = [
 
         mathMenuBtn.addEventListener('click', () => showScreen('mathType'));
         spanishMenuBtn.addEventListener('click', () => showScreen('spanishType'));
-        englishMenuBtn.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
+        englishMenuBtn.addEventListener('click', () => showEnglishCategories());
         gemsMenuBtn.addEventListener('click', showGemsScreen);
         statsMenuBtn.addEventListener('click', showStatsScreen);
+        document.getElementById('back-to-main-menu-from-english-btn').addEventListener('click', () => showScreen('mainMenu'));
         backToMainFromGemsBtn.addEventListener('click', () => showScreen('mainMenu'));
         backToMainFromStatsBtn.addEventListener('click', () => showScreen('mainMenu'));
         closePrizeAlertBtn.addEventListener('click', () => screens.prizeAlert.classList.add('hidden'));
@@ -1403,14 +1514,14 @@ const welcomeMessages = [
       
 
         backBtn.addEventListener('click', () => {
-            if (['english', 'connect'].includes(currentQuizType)) {
-                showScreen('mainMenu');
-            } else if (['reading'].includes(currentQuizType)) {
-                showScreen('spanishType');
-            } else {
-                showScreen('mathType');
-            }
-        });
+    if (currentQuizType === 'english') {
+        showScreen('englishType'); // <-- Volver al menú de categorías de inglés
+    } else if (['reading'].includes(currentQuizType)) {
+        showScreen('spanishType');
+    } else {
+        showScreen('mathType');
+    }
+});
 
         backFromQuizBtn.addEventListener('click', () => {
             resetState();
