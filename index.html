@@ -380,6 +380,15 @@
         const clearLinesBtn = document.getElementById('clear-lines-btn');
         const connectGameCounterEl = document.getElementById('connect-game-counter');
         const connectGameFeedbackEl = document.getElementById('connect-game-feedback');
+      
+      // Lista de mensajes de bienvenida aleatorios
+const welcomeMessages = [
+    "¿Listo/a para entrenar tu mente?",
+    "¡El desafío de hoy te espera!",
+    "Cada respuesta correcta te hace más fuerte.",
+    "¡Demuestra tu genialidad!",
+    "¡Vamos a aprender algo nuevo hoy!"
+];
 
         // --- Content Data ---
         const englishData = {
@@ -518,29 +527,41 @@
         }
 
         function initializeUser() {
-            const savedName = localStorage.getItem('quizUserName');
-            loadGems();
-            loadStats();
-            if (savedName) {
-                userName = savedName;
-                welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
-                showScreen('mainMenu');
-            } else {
-                showScreen('nameInput');
-            }
-        }
+    const savedName = localStorage.getItem('quizUserName');
+    loadGems();
+    loadStats();
+    if (savedName) {
+        userName = savedName;
+        welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+        
+        // Elige un mensaje aleatorio y lo muestra en el menú principal
+        const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        document.querySelector('#main-menu-screen .text-gray-600').textContent = randomMessage;
+
+        showScreen('mainMenu');
+    } else {
+        showScreen('nameInput');
+    }
+}
+      
 
         function saveUserAndStart() {
-            const name = nameInputEl.value.trim();
-            if (name) {
-                userName = name;
-                localStorage.setItem('quizUserName', name);
-                welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
-                showScreen('mainMenu');
-            } else {
-                nameInputEl.classList.add('border-red-500');
-            }
-        }
+    const name = nameInputEl.value.trim();
+    if (name) {
+        userName = name;
+        localStorage.setItem('quizUserName', name);
+        welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+
+        // Elige un mensaje aleatorio para darle la bienvenida al nuevo usuario
+        const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        document.querySelector('#main-menu-screen .text-gray-600').textContent = randomMessage;
+
+        showScreen('mainMenu');
+    } else {
+        nameInputEl.classList.add('border-red-500');
+    }
+}
+      
 
         function loadGems() {
             const savedGems = localStorage.getItem('quizUserGems');
@@ -965,7 +986,7 @@
 
         function setupDivisionVisualGame() {
             divisionGameCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
-            const items = ['🍎', '🎈', '⭐', '🎁', '⚽'];
+            const items = ['🍎', '🎈', '⭐', '🎁', '⚽', '🍕', '🚗', '🐶', '🎸', '📚'];
             const item = items[Math.floor(Math.random() * items.length)];
             const divisor = getRandomNumber(2, 4);
             const quotient = getRandomNumber(2, 4);
@@ -1370,9 +1391,16 @@
         });
         
         exitSessionBtn.addEventListener('click', () => {
-             welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
-             showScreen('mainMenu');
-        });
+    welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
+
+    // Elige y muestra un mensaje aleatorio al volver al menú
+    const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    document.querySelector('#main-menu-screen .text-gray-600').textContent = randomMessage;
+    
+    showScreen('mainMenu');
+});
+      
+      
 
         backBtn.addEventListener('click', () => {
             if (['english', 'connect'].includes(currentQuizType)) {
