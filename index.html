@@ -130,11 +130,13 @@
         
         <!-- Gems Screen -->
         <div id="gems-screen" class="hidden">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-6">💎 Mis Recompensas</h1>
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-4">💎 Mis Recompensas</h1>
+            <div id="total-diamonds-container" class="mb-6 text-xl font-semibold text-gray-800 bg-indigo-100 p-4 rounded-lg">
+                <!-- Total diamonds will be shown here -->
+            </div>
             <div id="gems-container" class="space-y-4 text-left p-4 bg-gray-50 rounded-lg">
                 <!-- Gem details will be populated here -->
             </div>
-            <p class="text-gray-500 mt-4 text-sm">¡Consigue un 💎 de cada nivel para el gran premio!</p>
             <button id="back-to-main-from-gems-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
         
@@ -151,7 +153,7 @@
         <div id="prize-alert-screen" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-2xl p-8 text-center shadow-2xl transform transition-all scale-95 animate-pulse">
                 <h2 class="text-4xl font-bold text-yellow-500 mb-4">🏆 ¡GRAN PREMIO! 🏆</h2>
-                <p class="text-2xl text-gray-700 mb-6">¡Felicidades, <span class="user-name-placeholder"></span>! Has demostrado tu maestría al conseguir diamantes de todos los niveles.</p>
+                <p class="text-2xl text-gray-700 mb-6">¡Felicidades, <span class="user-name-placeholder"></span>! Has demostrado tu increíble dedicación al conseguir 100 diamantes.</p>
                 <p class="text-lg text-gray-600">¡Te has ganado una tarjeta de Google Play para disfrutar de tus videojuegos favoritos como recompensa por tu increíble esfuerzo!</p>
                 <button id="close-prize-alert-btn" class="mt-8 w-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">¡Genial!</button>
             </div>
@@ -958,6 +960,8 @@
 
         function showGemsScreen() {
             gemsContainerEl.innerHTML = '';
+            let totalDiamonds = 0;
+
             const subjects = {
                 'Matemáticas': ['multiplication', 'addition', 'subtraction', 'division', 'connect'],
                 'Español': ['reading', 'spelling', 'riddles'],
@@ -984,6 +988,7 @@
                         Object.keys(gems[type]).forEach(level => {
                             const levelGems = gems[type][level];
                             if(levelGems.diamonds > 0 || levelGems.rubies > 0) {
+                                totalDiamonds += levelGems.diamonds;
                                 const levelDiv = document.createElement('div');
                                 levelDiv.className = 'ml-4 text-gray-700';
                                 let retryButtonHTML = '';
@@ -1016,6 +1021,10 @@
                     gemsContainerEl.appendChild(subjectDiv);
                 }
             }
+
+            const totalDiamondsContainer = document.getElementById('total-diamonds-container');
+            totalDiamondsContainer.innerHTML = `💎 Total Acumulado: <span class="font-bold text-indigo-600">${totalDiamonds} / 100</span>`;
+
             if (gemsContainerEl.innerHTML === '') {
                 gemsContainerEl.innerHTML = '<p class="text-center text-gray-500">Aún no has ganado ninguna recompensa. ¡Sigue jugando para conseguirlas!</p>';
             }
@@ -1031,6 +1040,7 @@
 
             showScreen('gems');
         }
+      
 
         function showStatsScreen() {
             statsContainerEl.innerHTML = '';
@@ -1060,7 +1070,7 @@
             showScreen('stats');
         }
 
-        function awardGem(quizType, difficultyKey, gemType) {
+        function awardGem(quizType, difficultyKey, gemType, amount) {
             if (!difficultyKey) return;
 
             let mainType = quizType;
@@ -1071,7 +1081,7 @@
             if (!gems[mainType]) gems[mainType] = {};
             if (!gems[mainType][difficultyKey]) gems[mainType][difficultyKey] = { diamonds: 0, rubies: 0 };
             
-            gems[mainType][difficultyKey][gemType]++;
+            gems[mainType][difficultyKey][gemType] += amount;
             saveGems();
             
             if (gemType === 'diamonds') {
@@ -1083,14 +1093,16 @@
             const grandPrizeAwarded = localStorage.getItem('grandPrizeAwarded');
             if (grandPrizeAwarded) return;
             
-            let hasEasy = false, hasNormal = false, hasHard = false;
-            for(const type in gems) {
-                if(gems[type].easy && gems[type].easy.diamonds > 0) hasEasy = true;
-                if(gems[type].normal && gems[type].normal.diamonds > 0) hasNormal = true;
-                if(gems[type].hard && gems[type].hard.diamonds > 0) hasHard = true;
+            let totalDiamonds = 0;
+            for (const type in gems) {
+                for (const level in gems[type]) {
+                    if (gems[type][level].diamonds) {
+                        totalDiamonds += gems[type][level].diamonds;
+                    }
+                }
             }
 
-            if (hasEasy && hasNormal && hasHard) {
+            if (totalDiamonds >= 100) {
                 document.querySelectorAll('.user-name-placeholder').forEach(el => el.textContent = userName);
                 screens.prizeAlert.classList.remove('hidden');
                 localStorage.setItem('grandPrizeAwarded', 'true');
@@ -1669,6 +1681,7 @@
                 handleRoundEnd();
             }
         }
+      
         
         function handleRoundEnd() {
             totalScore += score;
@@ -1766,6 +1779,7 @@
                 answersContainer.removeChild(answersContainer.firstChild);
             }
         }
+      
 
         function handleAnswerSelection(e) {
             clearInterval(timer);
@@ -1786,6 +1800,7 @@
                 showFeedback(false, correctAnswer);
             }
         }
+      
         
         function showFeedback(isCorrect, correctAnswer, selectedButton = null) {
             Array.from(answersContainer.children).forEach(button => {
@@ -1809,6 +1824,7 @@
             currentQuestionIndex++;
             setTimeout(showNextQuestion, 2000);
         }
+      
 
         function startTimer(progressEl, textEl) {
             timeLeft = difficultySettings ? difficultySettings.timeLimit : quizSettings[currentQuizType].timeLimit;
@@ -1837,6 +1853,7 @@
                 }
             }, 1000);
         }
+      
       
       function showEnglishCategories() {
         currentQuizType = 'english';
@@ -1886,6 +1903,7 @@
         showScreen('englishType');
     }
 
+      
     function setupGrammarQuestion() {
         resetState();
         showScreen('grammar');
@@ -1904,6 +1922,7 @@
             handleRoundEnd();
         }
     }
+      
 
     function checkGrammarAnswer() {
         clearInterval(timer);
@@ -1911,6 +1930,7 @@
         const correctAnswer = questions[currentQuestionIndex].a.toLowerCase();
         showGrammarFeedback(userAnswer === correctAnswer, questions[currentQuestionIndex].a);
     }
+      
 
     function showGrammarFeedback(isCorrect, correctAnswerText) {
         grammarInputEl.disabled = true;
@@ -1951,13 +1971,13 @@
             const percentage = totalScore / totalPossibleScore;
 
             if (totalScore === totalPossibleScore && difficultySettings) {
-                awardGem(mainType, difficultySettings.key, 'diamonds');
+                awardGem(mainType, difficultySettings.key, 'diamonds', 10);
                 finalTitleEl.textContent = `¡PERFECTO, ${userName}! 💎`;
-                finalMotivationEl.textContent = "¡Has ganado un Diamante por tu increíble desempeño!";
+                finalMotivationEl.textContent = "¡Has ganado 10 Diamantes por tu increíble desempeño!";
             } else if (percentage >= 0.8 && difficultySettings) {
-                awardGem(mainType, difficultySettings.key, 'rubies');
+                awardGem(mainType, difficultySettings.key, 'rubies', 5);
                 finalTitleEl.textContent = `¡EXCELENTE, ${userName}! 🔴`;
-                finalMotivationEl.textContent = "¡Casi perfecto! Has ganado un Rubí por tu gran esfuerzo.";
+                finalMotivationEl.textContent = "¡Casi perfecto! Has ganado 5 Rubíes por tu gran esfuerzo.";
             }
             else if (totalScore < totalPossibleScore * 0.6) {
                 finalTitleEl.textContent = `¡Gran Esfuerzo, ${userName}!`;
@@ -1976,6 +1996,7 @@
 
             summaryTextEl.textContent = `${quizName}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
         }
+      
 
         function showTableSelectionScreen() {
             const container = document.getElementById('table-buttons-container');
