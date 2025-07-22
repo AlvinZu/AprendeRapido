@@ -515,12 +515,54 @@
         
         // --- Content Data ---
         const englishData = {
-            colors: { 'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise', 'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby' },
-            animals: { 'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 'Rana': 'Frog', 'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly', 'Tortuga': 'Turtle', 'Ardilla': 'Squirrel', 'Ciervo': 'Deer', 'Canguro': 'Kangaroo' },
-            verbs: { 'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 'Escuchar': 'Listen', 'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 'Crear': 'Make', 'Encontrar': 'Find', 'Sentir': 'Feel', 'Amar': 'Love' },
-            schoolSupplies: { 'Lápiz': 'Pencil', 'Cuaderno': 'Notebook', 'Libro': 'Book', 'Mochila': 'Backpack', 'Tijeras': 'Scissors', 'Pegamento': 'Glue', 'Regla': 'Ruler', 'Pizarrón': 'Blackboard', 'Borrador': 'Eraser', 'Pluma': 'Pen', 'Marcador': 'Marker', 'Sacapuntas': 'Pencil sharpener', 'Calculadora': 'Calculator', 'Escritorio': 'Desk', 'Silla': 'Chair', 'Computadora': 'Computer', 'Grapadora': 'Stapler', 'Cinta adhesiva': 'Tape', 'Pintura': 'Paint', 'Pincel': 'Brush', 'Mapa': 'Map', 'Globo terráqueo': 'Globe', 'Diccionario': 'Dictionary', 'Papel': 'Paper', 'Carpeta': 'Folder', 'Crayón': 'Crayon', 'Tiza': 'Chalk', 'Mesa': 'Table', 'Uniforme': 'Uniform', 'Gimnasio': 'Gym' },
+            colors: { 
+                'Rojo': 'Red', 'Azul': 'Blue', 'Verde': 'Green', 'Amarillo': 'Yellow', 'Naranja': 'Orange', 
+                'Morado': 'Purple', 'Negro': 'Black', 'Blanco': 'White', 'Rosa': 'Pink', 'Marrón': 'Brown', 
+                'Gris': 'Gray', 'Cian': 'Cyan', 'Dorado': 'Gold', 'Plateado': 'Silver', 'Turquesa': 'Turquoise', 
+                'Beige': 'Beige', 'Índigo': 'Indigo', 'Violeta': 'Violet', 'Magenta': 'Magenta', 'Lima': 'Lime', 
+                'Oliva': 'Olive', 'Carmesí': 'Crimson', 'Caqui': 'Khaki', 'Marfil': 'Ivory', 'Lavanda': 'Lavender', 
+                'Salmón': 'Salmon', 'Cobre': 'Copper', 'Bronce': 'Bronze', 'Esmeralda': 'Emerald', 'Rubí': 'Ruby',
+                'Azul marino': 'Navy', 'Aguamarina': 'Aqua', 'Fucsia': 'Fuchsia', 'Granate': 'Maroon', 'Teja': 'Teal'
+            },
+            animals: { 
+                'Perro': 'Dog', 'Gato': 'Cat', 'Pájaro': 'Bird', 'Pez': 'Fish', 'Caballo': 'Horse', 'Vaca': 'Cow', 
+                'León': 'Lion', 'Tigre': 'Tiger', 'Oso': 'Bear', 'Elefante': 'Elephant', 'Serpiente': 'Snake', 
+                'Mono': 'Monkey', 'Jirafa': 'Giraffe', 'Cebra': 'Zebra', 'Lobo': 'Wolf', 'Zorro': 'Fox', 'Pato': 'Duck', 
+                'Rana': 'Frog', 'Conejo': 'Rabbit', 'Cerdo': 'Pig', 'Oveja': 'Sheep', 'Pollo': 'Chicken', 'Ratón': 'Mouse', 
+                'Tiburón': 'Shark', 'Ballena': 'Whale', 'Delfín': 'Dolphin', 'Cangrejo': 'Crab', 'Pulpo': 'Octopus', 
+                'Águila': 'Eagle', 'Búho': 'Owl', 'Mariposa': 'Butterfly', 'Tortuga': 'Turtle', 'Ardilla': 'Squirrel', 
+                'Ciervo': 'Deer', 'Canguro': 'Kangaroo', 'Pingüino': 'Penguin', 'Rinoceronte': 'Rhinoceros', 
+                'Hipopótamo': 'Hippopotamus', 'Cocodrilo': 'Crocodile', 'Camello': 'Camel', 'Pavo': 'Turkey'
+            },
+            verbs: { 
+                'Correr': 'Run', 'Comer': 'Eat', 'Beber': 'Drink', 'Dormir': 'Sleep', 'Jugar': 'Play', 'Leer': 'Read', 
+                'Escribir': 'Write', 'Caminar': 'Walk', 'Hablar': 'Speak', 'Ver': 'See', 'Nadar': 'Swim', 'Volar': 'Fly', 
+                'Cantar': 'Sing', 'Bailar': 'Dance', 'Pensar': 'Think', 'Aprender': 'Learn', 'Ayudar': 'Help', 'Mirar': 'Look', 
+                'Escuchar': 'Listen', 'Trabajar': 'Work', 'Abrir': 'Open', 'Cerrar': 'Close', 'Dar': 'Give', 'Tomar': 'Take', 
+                'Querer': 'Want', 'Saber': 'Know', 'Ir': 'Go', 'Venir': 'Come', 'Hacer': 'Do', 'Decir': 'Say', 'Obtener': 'Get', 
+                'Crear': 'Make', 'Encontrar': 'Find', 'Sentir': 'Feel', 'Amar': 'Love', 'Odiar': 'Hate', 'Saltar': 'Jump', 
+                'Cocinar': 'Cook', 'Limpiar': 'Clean', 'Lavar': 'Wash', 'Conducir': 'Drive', 'Comprar': 'Buy', 'Vender': 'Sell',
+                'Construir': 'Build', 'Romper': 'Break', 'Elegir': 'Choose', 'Soñar': 'Dream', 'Caer': 'Fall', 'Crecer': 'Grow'
+            },
+            schoolSupplies: { 
+                'Lápiz': 'Pencil', 'Cuaderno': 'Notebook', 'Libro': 'Book', 'Mochila': 'Backpack', 'Tijeras': 'Scissors', 
+                'Pegamento': 'Glue', 'Regla': 'Ruler', 'Pizarrón': 'Blackboard', 'Borrador': 'Eraser', 'Pluma': 'Pen', 
+                'Marcador': 'Marker', 'Sacapuntas': 'Pencil sharpener', 'Calculadora': 'Calculator', 'Escritorio': 'Desk', 
+                'Silla': 'Chair', 'Computadora': 'Computer', 'Grapadora': 'Stapler', 'Cinta adhesiva': 'Tape', 'Pintura': 'Paint', 
+                'Pincel': 'Brush', 'Mapa': 'Map', 'Globo terráqueo': 'Globe', 'Diccionario': 'Dictionary', 'Papel': 'Paper', 
+                'Carpeta': 'Folder', 'Crayón': 'Crayon', 'Tiza': 'Chalk', 'Mesa': 'Table', 'Uniforme': 'Uniform', 'Gimnasio': 'Gym',
+                'Campana': 'Bell', 'Casillero': 'Locker', 'Pega en barra': 'Glue stick', 'Resaltador': 'Highlighter'
+            },
             family: { 'Madre': 'Mother', 'Padre': 'Father', 'Hermano': 'Brother', 'Hermana': 'Sister', 'Abuela': 'Grandmother', 'Abuelo': 'Grandfather', 'Tío': 'Uncle', 'Tía': 'Aunt', 'Primo/a': 'Cousin', 'Hijo': 'Son', 'Hija': 'Daughter', 'Bebé': 'Baby', 'Sobrino': 'Nephew', 'Sobrina': 'Niece', 'Nieto': 'Grandson', 'Nieta': 'Granddaughter', 'Esposo': 'Husband', 'Esposa': 'Wife', 'Suegro': 'Father-in-law', 'Suegra': 'Mother-in-law', 'Cuñado': 'Brother-in-law', 'Cuñada': 'Sister-in-law', 'Padrino': 'Godfather', 'Madrina': 'Godmother', 'Gemelo/a': 'Twin', 'Parientes': 'Relatives', 'Amigo/a': 'Friend', 'Padres': 'Parents', 'Hijos (plural)': 'Children', 'Abuelos (plural)': 'Grandparents' },
-            placesInCity: { 'Escuela': 'School', 'Parque': 'Park', 'Tienda': 'Store', 'Hospital': 'Hospital', 'Restaurante': 'Restaurant', 'Banco': 'Bank', 'Cine': 'Cinema', 'Biblioteca': 'Library', 'Supermercado': 'Supermarket', 'Estación de policía': 'Police station', 'Estación de bomberos': 'Fire station', 'Aeropuerto': 'Airport', 'Estación de tren': 'Train station', 'Museo': 'Museum', 'Zoológico': 'Zoo', 'Panadería': 'Bakery', 'Farmacia': 'Pharmacy', 'Oficina de correos': 'Post office', 'Hotel': 'Hotel', 'Gimnasio': 'Gym', 'Playa': 'Beach', 'Montaña': 'Mountain', 'Río': 'River', 'Puente': 'Bridge', 'Calle': 'Street', 'Avenida': 'Avenue', 'Plaza': 'Square', 'Iglesia': 'Church', 'Fábrica': 'Factory', 'Estacionamiento': 'Parking lot' }
+            placesInCity: { 
+                'Escuela': 'School', 'Parque': 'Park', 'Tienda': 'Store', 'Hospital': 'Hospital', 'Restaurante': 'Restaurant', 
+                'Banco': 'Bank', 'Cine': 'Cinema', 'Biblioteca': 'Library', 'Supermercado': 'Supermarket', 'Estación de policía': 'Police station', 
+                'Estación de bomberos': 'Fire station', 'Aeropuerto': 'Airport', 'Estación de tren': 'Train station', 'Museo': 'Museum', 
+                'Zoológico': 'Zoo', 'Panadería': 'Bakery', 'Farmacia': 'Pharmacy', 'Oficina de correos': 'Post office', 'Hotel': 'Hotel', 
+                'Gimnasio': 'Gym', 'Playa': 'Beach', 'Montaña': 'Mountain', 'Río': 'River', 'Puente': 'Bridge', 'Calle': 'Street', 
+                'Avenida': 'Avenue', 'Plaza': 'Square', 'Iglesia': 'Church', 'Fábrica': 'Factory', 'Estacionamiento': 'Parking lot',
+                'Cafetería': 'Coffee shop', 'Teatro': 'Theater', 'Estadio': 'Stadium', 'Gasolinera': 'Gas station', 'Peluquería': 'Hair salon'
+            }
         };
 
         const grammarData = {
@@ -587,7 +629,27 @@
             { q: "Are ___ ready for the game?", a: "You", o: ["I", "He", "We"] },
             { q: "This is my cat. ___ likes to sleep.", a: "It", o: ["He", "She", "They"] },
             { q: "My parents are doctors. ___ work at the hospital.", a: "They", o: ["We", "You", "I"] },
-            { q: "My sister is a great singer. ___ sings beautifully.", a: "She", o: ["He", "It", "We"] }
+            { q: "My sister is a great singer. ___ sings beautifully.", a: "She", o: ["He", "It", "We"] },
+            { q: "My father is a pilot. ___ flies airplanes.", a: "He", o: ["She", "They", "I"] },
+            { q: "The book is on the table. ___ is open.", a: "It", o: ["He", "She", "We"] },
+            { q: "___ are going to the cinema tonight.", a: "We", o: ["He", "She", "I"] },
+            { q: "Hello, Maria. How are ___?", a: "You", o: ["I", "She", "They"] },
+            { q: "The children are in the garden. ___ are happy.", a: "They", o: ["We", "He", "She"] },
+            { q: "___ am from Spain.", a: "I", o: ["You", "He", "It"] },
+            { q: "The computer is new. ___ is very fast.", a: "It", o: ["She", "He", "We"] },
+            { q: "My aunt is a nurse. ___ helps people.", a: "She", o: ["He", "They", "I"] },
+            { q: "My friends and I love music. ___ listen to it every day.", a: "We", o: ["They", "You", "It"] },
+            { q: "The birds are singing. ___ are beautiful.", a: "They", o: ["We", "He", "She"] },
+            { q: "Is ___ your brother over there?", a: "He", o: ["She", "It", "I"] },
+            { q: "Look at the flower. ___ is very colorful.", a: "It", o: ["She", "He", "They"] },
+            { q: "___ are my best friend.", a: "You", o: ["I", "We", "She"] },
+            { q: "My cousin is tall. ___ plays basketball.", a: "He", o: ["She", "It", "We"] },
+            { q: "My sister and her friend are here. ___ are talking.", a: "They", o: ["We", "I", "You"] },
+            { q: "___ have a blue car.", a: "I", o: ["He", "She", "It"] },
+            { q: "The students have an exam. ___ are studying.", a: "They", o: ["We", "You", "He"] },
+            { q: "My mom is cooking. ___ is making pasta.", a: "She", o: ["He", "It", "They"] },
+            { q: "My grandparents live in a small house. ___ love their garden.", a: "They", o: ["We", "You", "I"] },
+            { q: "My dog and I go to the park. ___ play together.", a: "We", o: ["They", "He", "She"] }
         ];
 
         const ortografiaData = [
