@@ -124,6 +124,7 @@
                  <button id="spanish-menu-btn" class="w-full bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">📖 Español</button>
                  <button id="english-menu-btn" data-quiz-type="english" class="w-full bg-gradient-to-br from-purple-500 to-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">🌐 Inglés</button>
                  <button id="gems-menu-btn" class="w-full bg-gradient-to-br from-gray-400 to-gray-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">💎 Mis Recompensas</button>
+                 <button id="prizes-menu-btn" class="w-full bg-gradient-to-br from-yellow-400 to-green-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">🏆 Mis Trofeos</button>
                  <button id="stats-menu-btn" class="w-full bg-gradient-to-br from-cyan-400 to-sky-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">📊 Mis Estadísticas</button>
             </div>
         </div>
@@ -147,6 +148,15 @@
                 <!-- Stats will be populated here -->
             </div>
             <button id="back-to-main-from-stats-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
+        </div>
+      
+      <!-- Grand Prizes History Screen -->
+        <div id="grand-prizes-screen" class="hidden">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-700 mb-6">🏆 Mis Trofeos</h1>
+            <div id="grand-prizes-container" class="space-y-6 text-left">
+                <!-- Prize history will be populated here -->
+            </div>
+            <button id="back-to-main-from-prizes-btn" class="mt-8 text-sm text-gray-500 hover:text-gray-700 transition-colors">← Volver al Menú Principal</button>
         </div>
 
         <!-- Grand Prize Alert Screen -->
@@ -396,6 +406,7 @@
             mainMenu: document.getElementById('main-menu-screen'),
             gems: document.getElementById('gems-screen'),
             stats: document.getElementById('stats-screen'),
+            grandPrizes: document.getElementById('grand-prizes-screen'),
             prizeAlert: document.getElementById('prize-alert-screen'),
             mathType: document.getElementById('math-type-screen'),
             spanishType: document.getElementById('spanish-type-screen'),
@@ -421,10 +432,13 @@
         const englishMenuBtn = document.getElementById('english-menu-btn');
         const gemsMenuBtn = document.getElementById('gems-menu-btn');
         const statsMenuBtn = document.getElementById('stats-menu-btn');
+        const prizesMenuBtn = document.getElementById('prizes-menu-btn');
         const backToMainFromGemsBtn = document.getElementById('back-to-main-from-gems-btn');
         const backToMainFromStatsBtn = document.getElementById('back-to-main-from-stats-btn');
+        const backToMainFromPrizesBtn = document.getElementById('back-to-main-from-prizes-btn');
         const gemsContainerEl = document.getElementById('gems-container');
         const statsContainerEl = document.getElementById('stats-container');
+        const grandPrizesContainerEl = document.getElementById('grand-prizes-container');
         const closePrizeAlertBtn = document.getElementById('close-prize-alert-btn');
         const mathTypeButtons = screens.mathType.querySelectorAll('[data-quiz-type]');
         const spanishTypeButtons = screens.spanishType.querySelectorAll('[data-quiz-type]');
@@ -867,6 +881,7 @@
         let selectedItem = null;
         let gems = {};
         let stats = {};
+        let grandPrizes = [];
         let connectGameData = {
             selected: null,
             connections: []
@@ -900,6 +915,7 @@
             const savedName = localStorage.getItem('quizUserName');
             loadGems();
             loadStats();
+            loadGrandPrizes(); // <-- AÑADIR ESTA LÍNEA
             if (savedName) {
                 userName = savedName;
                 welcomeTitleEl.textContent = `¡Hola, ${userName}!`;
@@ -1089,10 +1105,7 @@
             }
         }
 
-        function checkGrandPrize() {
-            const grandPrizeAwarded = localStorage.getItem('grandPrizeAwarded');
-            if (grandPrizeAwarded) return;
-            
+         function checkGrandPrize() {
             let totalDiamonds = 0;
             for (const type in gems) {
                 for (const level in gems[type]) {
@@ -1103,11 +1116,22 @@
             }
 
             if (totalDiamonds >= 100) {
+                const prizeRecord = {
+                    date: new Date().toLocaleDateString('es-ES'),
+                    gemsSnapshot: JSON.parse(JSON.stringify(gems)) // Deep copy
+                };
+                grandPrizes.push(prizeRecord);
+                saveGrandPrizes();
+
+                // Reset gems for the next prize
+                gems = {};
+                saveGems();
+
                 document.querySelectorAll('.user-name-placeholder').forEach(el => el.textContent = userName);
                 screens.prizeAlert.classList.remove('hidden');
-                localStorage.setItem('grandPrizeAwarded', 'true');
             }
         }
+      
         
         function selectQuizType(type) {
             currentQuizType = type;
@@ -1587,6 +1611,59 @@
                 });
             }, 100);
         }
+      
+      
+      function loadGrandPrizes() {
+            const savedPrizes = localStorage.getItem('quizUserGrandPrizes');
+            grandPrizes = savedPrizes ? JSON.parse(savedPrizes) : [];
+        }
+      
+
+        function saveGrandPrizes() {
+            localStorage.setItem('quizUserGrandPrizes', JSON.stringify(grandPrizes));
+        }
+
+      
+        function showGrandPrizesScreen() {
+            grandPrizesContainerEl.innerHTML = '';
+            
+            const totalPrizes = grandPrizes.length;
+            const header = document.createElement('div');
+            header.className = 'text-center mb-6';
+            header.innerHTML = `<p class="text-xl">Has ganado <span class="font-bold text-yellow-500 text-2xl">${totalPrizes}</span> ${totalPrizes === 1 ? 'Gran Premio' : 'Grandes Premios'}. ¡Sigue así!</p>`;
+            grandPrizesContainerEl.appendChild(header);
+
+            if (totalPrizes === 0) {
+                grandPrizesContainerEl.innerHTML += '<p class="text-center text-gray-500">Aún no has ganado ningún trofeo. ¡Sigue coleccionando diamantes para conseguir el primero!</p>';
+            } else {
+                [...grandPrizes].reverse().forEach((prize, index) => {
+                    const prizeDiv = document.createElement('div');
+                    prizeDiv.className = 'bg-gray-50 p-4 rounded-lg shadow-md';
+                    
+                    let detailsHtml = '';
+                    for (const type in prize.gemsSnapshot) {
+                        for (const level in prize.gemsSnapshot[type]) {
+                            const gemData = prize.gemsSnapshot[type][level];
+                            if (gemData.diamonds > 0) {
+                                const quizName = quizSettings[type] ? quizSettings[type].name : 'Inglés';
+                                const levelName = quizSettings[type].difficulties[level].name;
+                                detailsHtml += `<li class="text-sm text-gray-600 ml-4"><b>${gemData.diamonds}</b> 💎 de ${quizName} (${levelName})</li>`;
+                            }
+                        }
+                    }
+
+                    prizeDiv.innerHTML = `
+                        <h2 class="text-xl font-bold text-gray-800 mb-2">🏆 Trofeo #${totalPrizes - index}</h2>
+                        <p class="text-md text-gray-500 mb-2">Conseguido el: ${prize.date}</p>
+                        <p class="font-semibold text-gray-700">Resumen de Diamantes:</p>
+                        <ul class="list-disc list-inside">${detailsHtml}</ul>
+                    `;
+                    grandPrizesContainerEl.appendChild(prizeDiv);
+                });
+            }
+            showScreen('grandPrizes');
+        }
+      
 
         function handleConnectItemClick(e) {
             const clickedItem = e.target;
@@ -2054,6 +2131,8 @@
         backToMainFromStatsBtn.addEventListener('click', () => showScreen('mainMenu'));
         closePrizeAlertBtn.addEventListener('click', () => screens.prizeAlert.classList.add('hidden'));
         startFromInstructionBtn.addEventListener('click', startSession);
+        prizesMenuBtn.addEventListener('click', showGrandPrizesScreen);
+        backToMainFromPrizesBtn.addEventListener('click', () => showScreen('mainMenu'));
 
         [...mathTypeButtons, ...spanishTypeButtons].forEach(button => {
              button.addEventListener('click', (e) => selectQuizType(e.currentTarget.dataset.quizType));
