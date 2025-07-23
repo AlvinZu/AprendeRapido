@@ -1085,6 +1085,7 @@
             }
             showScreen('stats');
         }
+      
 
         function awardGem(quizType, difficultyKey, gemType, amount) {
             if (!difficultyKey) return;
@@ -1135,12 +1136,16 @@
         
         function selectQuizType(type) {
             currentQuizType = type;
-            if (currentQuizType === 'reading' || currentQuizType === 'spelling' || currentQuizType === 'riddles') {
-                difficultySettings = null; 
+            // Para juegos sin niveles de dificultad, creamos una configuración por defecto
+            if (currentQuizType === 'spelling' || currentQuizType === 'riddles') {
+                difficultySettings = { key: 'normal', name: 'Normal', timeLimit: quizSettings[type].timeLimit }; 
                 startSession();
             } else if (currentQuizType === 'pronouns') {
-                difficultySettings = null; // Pronouns don't have difficulty levels
+                difficultySettings = { key: 'normal', name: 'Práctica', timeLimit: quizSettings[type].timeLimit };
                 showInstructionScreen();
+            } else if (currentQuizType === 'reading') {
+                difficultySettings = null; 
+                startSession();
             }
             else {
                 showDifficultyScreen();
@@ -1186,6 +1191,7 @@
             }
         }
 
+      
         function showInstructionScreen() {
             const settings = quizSettings[currentQuizType];
             const title = difficultySettings ? difficultySettings.instructionTitle : settings.instructionTitle;
@@ -1197,6 +1203,7 @@
             showScreen('instruction');
         }
 
+      
         function startSession() {
             totalScore = 0;
             currentRound = 1;
@@ -1252,6 +1259,7 @@
             }
         }
         
+      
         function setupReadingScreen() {
             const reading = sessionContent[currentRound - 1];
             readingTitleEl.textContent = reading.title;
@@ -1323,6 +1331,7 @@
             clearInterval(readingTimerInterval);
         }
 
+      
         function generateQuestions() {
             questions = [];
             let mainType = currentQuizType;
@@ -1433,6 +1442,7 @@
             return { text, answer };
         }
         
+      
         function generateDivisionQuestion() {
             if (difficultySettings.name.includes('Normal')) {
                 const num2 = getRandomNumber(2, 9);
@@ -1448,6 +1458,7 @@
             }
         }
 
+      
         function generateConnectQuestion() {
             let num1, num2, answer, text, operator;
             const type = difficultySettings.key; // easy, normal, hard
@@ -1479,6 +1490,7 @@
             return { text, answer };
         }
         
+      
         function showNextDivisionGame() {
             if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
                 setupDivisionVisualGame();
@@ -1488,6 +1500,7 @@
             }
         }
 
+      
         function setupDivisionVisualGame() {
             divisionGameCounterEl.textContent = `Ronda ${currentRound} | Pregunta ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
             const items = ['🍎', '🎈', '⭐', '🎁', '⚽', '🍕', '🚗', '🐶', '🎸', '📚'];
@@ -1565,6 +1578,7 @@
             };
         }
 
+      
         function showNextConnectGame() {
             if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
                 setupConnectGame();
@@ -1573,6 +1587,7 @@
                 handleRoundEnd();
             }
         }
+      
 
         function setupConnectGame() {
             connectGameCounterEl.textContent = `Ronda ${currentRound} | Juego ${currentQuestionIndex + 1}/${QUESTIONS_PER_ROUND}`;
@@ -1689,6 +1704,7 @@
             }
         }
         
+      
         function drawConnections(feedback = false) {
             const ctx = connectCanvas.getContext('2d');
             const rect = connectContainer.getBoundingClientRect();
@@ -1720,6 +1736,7 @@
             });
         }
 
+      
         function showNextQuestion() {
             resetState();
             if (currentQuestionIndex < QUESTIONS_PER_ROUND) {
@@ -1868,6 +1885,7 @@
             showFeedback(selectedAnswer == correctAnswer, correctAnswer, selectedButton);
         }
 
+      
         function handleTimeUp() {
             if (currentQuizType === 'grammar') {
                 const correctAnswer = questions[currentQuestionIndex].a;
@@ -2047,12 +2065,15 @@
             updateStats(mainType, totalScore, totalPossibleScore);
             const percentage = totalScore / totalPossibleScore;
 
-            if (totalScore === totalPossibleScore && difficultySettings) {
-                awardGem(mainType, difficultySettings.key, 'diamonds', 10);
+            // Usamos una clave de dificultad 'normal' por defecto si no hay niveles
+            const difficultyKey = difficultySettings ? difficultySettings.key : 'normal';
+
+            if (totalScore === totalPossibleScore) {
+                awardGem(mainType, difficultyKey, 'diamonds', 10);
                 finalTitleEl.textContent = `¡PERFECTO, ${userName}! 💎`;
                 finalMotivationEl.textContent = "¡Has ganado 10 Diamantes por tu increíble desempeño!";
-            } else if (percentage >= 0.8 && difficultySettings) {
-                awardGem(mainType, difficultySettings.key, 'rubies', 5);
+            } else if (percentage >= 0.8) {
+                awardGem(mainType, difficultyKey, 'rubies', 5);
                 finalTitleEl.textContent = `¡EXCELENTE, ${userName}! 🔴`;
                 finalMotivationEl.textContent = "¡Casi perfecto! Has ganado 5 Rubíes por tu gran esfuerzo.";
             }
@@ -2071,7 +2092,7 @@
                 quizName += ` - ${quizSettings.english.categories[currentQuizCategory].name}`;
             }
 
-            summaryTextEl.textContent = `${quizName}${difficultySettings ? ' - ' + difficultySettings.name : ''}`;
+            summaryTextEl.textContent = `${quizName}${difficultySettings && difficultySettings.name !== 'Normal' ? ' - ' + difficultySettings.name : ''}`;
         }
       
 
